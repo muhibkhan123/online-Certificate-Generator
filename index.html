@@ -651,14 +651,20 @@
                                     class="w-full bg-transparent border-0 py-0 text-xs text-right">
                             </div>
 
-                            <div class="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded px-2 py-1 cursor-pointer relative">
-                                <input type="color" value="${field.color}" 
-                                    oninput="updateField(${field.id}, 'color', this.value)" 
+                            <div class="flex items-center gap-1 bg-gray-50 border border-gray-200 rounded px-2 py-1">
+                                <div class="relative w-4 h-4 shrink-0">
+                                     <input type="color" value="${field.color}" 
+                                        oninput="updateField(${field.id}, 'color', this.value)" 
+                                        onclick="event.stopPropagation()"
+                                        onfocus="selectField(${field.id}, true)"
+                                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                                     <div class="w-full h-full rounded-full border border-gray-300 shadow-sm" style="background-color: ${field.color}"></div>
+                                </div>
+                                <input type="text" value="${field.color}" 
+                                    oninput="updateField(${field.id}, 'color', this.value)"
                                     onclick="event.stopPropagation()"
                                     onfocus="selectField(${field.id}, true)"
-                                    class="w-6 h-6 rounded-full border-0 p-0 absolute opacity-0 cursor-pointer">
-                                <div class="w-4 h-4 rounded-full border border-gray-300 shadow-sm" style="background-color: ${field.color}"></div>
-                                <span class="text-[10px] text-gray-500 ml-auto font-mono">${field.color}</span>
+                                    class="min-w-0 flex-1 bg-transparent border-0 p-0 text-[10px] text-right font-mono text-gray-600 focus:ring-0 uppercase">
                             </div>
                         </div>
                     </div>

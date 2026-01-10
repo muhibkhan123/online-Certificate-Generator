@@ -336,6 +336,18 @@
                     { id: 3, text: "Student: Muhammad Ali", x: 300, y: 250, fontSize: 20, fontFamily: "Lato", fontWeight: "700", color: "#1f2937", spacing: 0 },
                     { id: 4, text: "Roll No: 12345", x: 900, y: 250, fontSize: 20, fontFamily: "Lato", fontWeight: "700", color: "#1f2937", spacing: 0 },
 
+                    // Table Lines (Converted to Text for Editability)
+                    // Header Line
+                    { id: 21, text: "__________________________________________________________________", x: 600, y: 335, fontSize: 20, fontFamily: "Arial", fontWeight: "400", color: "#9ca3af", spacing: 0 },
+                    // Row 1 Line
+                    { id: 22, text: "__________________________________________________________________", x: 600, y: 385, fontSize: 20, fontFamily: "Arial", fontWeight: "400", color: "#9ca3af", spacing: 0 },
+                    // Row 2 Line
+                    { id: 23, text: "__________________________________________________________________", x: 600, y: 425, fontSize: 20, fontFamily: "Arial", fontWeight: "400", color: "#9ca3af", spacing: 0 },
+                    // Row 3 Line
+                    { id: 24, text: "__________________________________________________________________", x: 600, y: 465, fontSize: 20, fontFamily: "Arial", fontWeight: "400", color: "#9ca3af", spacing: 0 },
+                    // Bottom Line
+                    { id: 25, text: "__________________________________________________________________", x: 600, y: 485, fontSize: 20, fontFamily: "Arial", fontWeight: "400", color: "#9ca3af", spacing: 0 },
+
                     // Headers
                     { id: 5, text: "SUBJECT", x: 400, y: 320, fontSize: 16, fontFamily: "Montserrat", fontWeight: "700", color: "#4b5563", spacing: 1 },
                     { id: 6, text: "TOTAL", x: 600, y: 320, fontSize: 16, fontFamily: "Montserrat", fontWeight: "700", color: "#4b5563", spacing: 1 },
@@ -403,10 +415,7 @@
             // 3. Draw Logo
             drawLogo();
 
-            // 4. Special Drawing for Marks Sheet
-            if (currentType === 'marks') {
-                drawMarksTable();
-            }
+            // 4. Special Drawing for Marks Sheet (Logic removed as lines are now text fields)
 
             // 5. Draw Text
             textFields.forEach(field => {
@@ -459,27 +468,6 @@
 
                 ctx.restore();
             });
-        }
-
-        function drawMarksTable() {
-            ctx.save();
-            ctx.strokeStyle = "#9ca3af";
-            ctx.lineWidth = 1;
-            
-            // Horizontal lines for the table simulation
-            // Header Line
-            ctx.beginPath(); ctx.moveTo(250, 340); ctx.lineTo(950, 340); ctx.stroke();
-            // Row 1 Line
-            ctx.beginPath(); ctx.moveTo(250, 390); ctx.lineTo(950, 390); ctx.stroke();
-            // Row 2 Line
-            ctx.beginPath(); ctx.moveTo(250, 430); ctx.lineTo(950, 430); ctx.stroke();
-            // Row 3 Line
-            ctx.beginPath(); ctx.moveTo(250, 470); ctx.lineTo(950, 470); ctx.stroke();
-            // Bottom Line
-            ctx.beginPath(); ctx.moveTo(250, 490); ctx.lineTo(950, 490); ctx.stroke();
-
-            // Vertical divider lines (Optional, kept simple for now)
-            ctx.restore();
         }
 
         function drawLogo() {

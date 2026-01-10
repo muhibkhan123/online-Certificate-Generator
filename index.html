@@ -613,41 +613,51 @@
                 const rowCount = lineCount > 1 ? lineCount : 1;
 
                 div.innerHTML = `
-                    <div class="space-y-3" onclick="selectField(${field.id})">
-                        <div class="flex gap-2 items-start">
+                    <div class="flex gap-3" onclick="selectField(${field.id})">
+                        <!-- Left: Input Area -->
+                        <div class="flex-1 min-w-0 flex flex-col">
                             <textarea 
                                 oninput="updateField(${field.id}, 'text', this.value)"
                                 onclick="event.stopPropagation()"
                                 onfocus="selectField(${field.id}, true)"
-                                class="flex-1 min-w-0 px-2 py-1 bg-gray-50 border border-gray-200 rounded text-sm font-semibold text-gray-800 resize-y focus:outline-none focus:ring-1 focus:ring-blue-500"
-                                rows="${rowCount}"
-                                style="min-height: 2.5rem;">${field.text}</textarea>
-                            <button onclick="deleteField(${field.id}, event)" class="text-gray-400 hover:text-red-500 px-1 pt-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                                class="w-full p-2 bg-gray-50 border border-gray-200 rounded text-sm font-semibold text-gray-800 resize-y focus:outline-none focus:ring-1 focus:ring-blue-500 min-h-[80px]"
+                                rows="${Math.max(3, rowCount)}"
+                                placeholder="Enter text...">${field.text}</textarea>
                         </div>
-                        <div class="grid grid-cols-2 gap-2">
+
+                        <!-- Right: Controls -->
+                        <div class="w-28 shrink-0 flex flex-col gap-2">
+                            <div class="flex justify-between items-center">
+                                <span class="text-[10px] font-bold text-gray-400 uppercase">Settings</span>
+                                <button onclick="deleteField(${field.id}, event)" class="text-gray-400 hover:text-red-500 p-1 rounded hover:bg-red-50" title="Delete">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+
                             <select onchange="updateField(${field.id}, 'fontFamily', this.value)" 
                                 onclick="event.stopPropagation()"
                                 onfocus="selectField(${field.id}, true)"
-                                class="col-span-2 px-2 py-1 bg-gray-50 border border-gray-200 rounded text-xs">
+                                class="w-full px-2 py-1 bg-gray-50 border border-gray-200 rounded text-xs truncate">
                                 ${fonts.map(f => `<option value="${f}" ${field.fontFamily === f ? 'selected' : ''}>${f}</option>`).join('')}
                             </select>
                             
-                            <div class="flex items-center gap-1 border border-gray-200 rounded px-2 bg-gray-50">
+                            <div class="flex items-center gap-1 bg-gray-50 border border-gray-200 rounded px-2 py-1">
                                 <span class="text-[10px] text-gray-500">Sz</span>
                                 <input type="number" value="${field.fontSize}" 
                                     oninput="updateField(${field.id}, 'fontSize', this.value)" 
                                     onclick="event.stopPropagation()"
                                     onfocus="selectField(${field.id}, true)"
-                                    class="w-full bg-transparent border-0 py-1 text-xs">
+                                    class="w-full bg-transparent border-0 py-0 text-xs text-right">
                             </div>
 
-                            <div class="flex items-center gap-1 border border-gray-200 rounded px-2 bg-gray-50">
+                            <div class="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded px-2 py-1 cursor-pointer relative">
                                 <input type="color" value="${field.color}" 
                                     oninput="updateField(${field.id}, 'color', this.value)" 
                                     onclick="event.stopPropagation()"
                                     onfocus="selectField(${field.id}, true)"
-                                    class="w-4 h-4 rounded-full border-0 p-0">
-                                <span class="text-[10px] text-gray-500 ml-auto">${field.color}</span>
+                                    class="w-6 h-6 rounded-full border-0 p-0 absolute opacity-0 cursor-pointer">
+                                <div class="w-4 h-4 rounded-full border border-gray-300 shadow-sm" style="background-color: ${field.color}"></div>
+                                <span class="text-[10px] text-gray-500 ml-auto font-mono">${field.color}</span>
                             </div>
                         </div>
                     </div>

@@ -588,21 +588,45 @@
                 const isSelected = field.id === selectedFieldId;
                 const div = document.createElement('div');
                 div.className = `p-3 rounded-lg border transition-all ${isSelected ? 'bg-white border-blue-500 shadow ring-1 ring-blue-500' : 'bg-white border-gray-200 hover:border-gray-300'}`;
+                
                 div.innerHTML = `
                     <div class="space-y-3" onclick="selectField(${field.id})">
                         <div class="flex gap-2">
-                            <input type="text" value="${field.text}" oninput="updateField(${field.id}, 'text', this.value)"
+                            <input type="text" value="${field.text}" 
+                                oninput="updateField(${field.id}, 'text', this.value)"
+                                onclick="event.stopPropagation()"
+                                onfocus="selectField(${field.id}, true)"
                                 class="flex-1 min-w-0 px-2 py-1 bg-gray-50 border border-gray-200 rounded text-sm font-semibold text-gray-800">
                             <button onclick="deleteField(${field.id}, event)" class="text-gray-400 hover:text-red-500 px-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                         </div>
                         <div class="grid grid-cols-2 gap-2">
-                            <select onchange="updateField(${field.id}, 'fontFamily', this.value)" class="col-span-2 px-2 py-1 bg-gray-50 border border-gray-200 rounded text-xs">
+                            <select onchange="updateField(${field.id}, 'fontFamily', this.value)" 
+                                onclick="event.stopPropagation()"
+                                onfocus="selectField(${field.id}, true)"
+                                class="col-span-2 px-2 py-1 bg-gray-50 border border-gray-200 rounded text-xs">
                                 ${fonts.map(f => `<option value="${f}" ${field.fontFamily === f ? 'selected' : ''}>${f}</option>`).join('')}
                             </select>
-                            <div class="flex items-center gap-1 border border-gray-200 rounded px-2 bg-gray-50"><span class="text-[10px] text-gray-500">Sz</span><input type="number" value="${field.fontSize}" oninput="updateField(${field.id}, 'fontSize', this.value)" class="w-full bg-transparent border-0 py-1 text-xs"></div>
-                            <div class="flex items-center gap-1 border border-gray-200 rounded px-2 bg-gray-50"><input type="color" value="${field.color}" oninput="updateField(${field.id}, 'color', this.value)" class="w-4 h-4 rounded-full border-0 p-0"><span class="text-[10px] text-gray-500 ml-auto">${field.color}</span></div>
+                            
+                            <div class="flex items-center gap-1 border border-gray-200 rounded px-2 bg-gray-50">
+                                <span class="text-[10px] text-gray-500">Sz</span>
+                                <input type="number" value="${field.fontSize}" 
+                                    oninput="updateField(${field.id}, 'fontSize', this.value)" 
+                                    onclick="event.stopPropagation()"
+                                    onfocus="selectField(${field.id}, true)"
+                                    class="w-full bg-transparent border-0 py-1 text-xs">
+                            </div>
+
+                            <div class="flex items-center gap-1 border border-gray-200 rounded px-2 bg-gray-50">
+                                <input type="color" value="${field.color}" 
+                                    oninput="updateField(${field.id}, 'color', this.value)" 
+                                    onclick="event.stopPropagation()"
+                                    onfocus="selectField(${field.id}, true)"
+                                    class="w-4 h-4 rounded-full border-0 p-0">
+                                <span class="text-[10px] text-gray-500 ml-auto">${field.color}</span>
+                            </div>
                         </div>
-                    </div>`;
+                    </div>
+                `;
                 layersList.appendChild(div);
             });
             lucide.createIcons();
@@ -612,7 +636,13 @@
             const f = textFields.find(x => x.id === id);
             if (f) { f[key] = val; draw(); }
         }
-        function selectField(id) { selectedFieldId = id; draw(); renderLayers(); }
+        
+        function selectField(id, skipRender = false) {
+            selectedFieldId = id;
+            draw();
+            if (!skipRender) renderLayers();
+        }
+        
         function addTextField() {
             const id = Date.now();
             textFields.push({ id: id, text: "New Text", x: CANVAS_WIDTH/2, y: CANVAS_HEIGHT/2, fontSize: 40, fontFamily: "Lato", color: "#000000", isDragging: false });

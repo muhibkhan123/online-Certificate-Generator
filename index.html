@@ -95,13 +95,8 @@
     <!-- Main Content -->
     <main class="flex-1 flex overflow-hidden">
         
-        <!-- Canvas Area -->
-        <div id="canvas-wrapper" class="flex-1 bg-gray-100 p-8 flex items-center justify-center overflow-auto relative">
-            <canvas id="certificateCanvas" class="bg-white shadow-2xl rounded-sm cursor-crosshair"></canvas>
-        </div>
-
-        <!-- Controls Sidebar -->
-        <aside class="w-96 bg-white border-l border-gray-200 flex flex-col shrink-0 z-20 shadow-xl">
+        <!-- Controls Sidebar (Moved to Left) -->
+        <aside class="w-96 bg-white border-r border-gray-200 flex flex-col shrink-0 z-20 shadow-xl">
             
             <!-- Sidebar Tabs -->
             <div class="flex border-b border-gray-200">
@@ -213,6 +208,12 @@
             </div>
 
         </aside>
+
+        <!-- Canvas Area -->
+        <div id="canvas-wrapper" class="flex-1 bg-gray-100 p-8 flex items-center justify-center overflow-auto relative">
+            <canvas id="certificateCanvas" class="bg-white shadow-2xl rounded-sm cursor-crosshair"></canvas>
+        </div>
+
     </main>
 
     <script>

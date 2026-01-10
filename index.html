@@ -437,6 +437,11 @@
                 tableActions.classList.remove('flex');
             }
 
+            // Important: Recalculate layout initially for marks sheet to set correct widths
+            if(type === 'marks') {
+                recalculateTableLayout();
+            }
+
             draw();
             renderLayers();
         }
@@ -447,50 +452,75 @@
             return textFields.filter(f => f.isTableCell);
         }
 
+        function recalculateTableLayout() {
+            const cells = getTableCells();
+            if (cells.length === 0) return;
+
+            // Get unique cols and sort
+            const cols = [...new Set(cells.map(c => c.tableCol))].sort((a, b) => a - b);
+            const numCols = cols.length;
+            
+            // Fixed Table Area - Center on Canvas
+            const tableWidth = 900; 
+            const tableLeft = (CANVAS_WIDTH - tableWidth) / 2; // (1200 - 900) / 2 = 150
+            
+            // Calculate width per column
+            const colWidth = tableWidth / Math.max(1, numCols);
+
+            // Update X positions for all table cells
+            cells.forEach(cell => {
+                const colIndex = cols.indexOf(cell.tableCol);
+                // Center text in column
+                cell.x = tableLeft + (colIndex * colWidth) + (colWidth / 2);
+            });
+            
+            updateSummaryLayout();
+        }
+
         function updateSummaryLayout() {
             const cells = getTableCells();
             if (cells.length === 0) return;
 
-            // Find boundaries
+            // Find boundaries based on recalculateTableLayout
+            const tableWidth = 900;
+            const tableLeft = (CANVAS_WIDTH - tableWidth) / 2;
+            const tableRight = tableLeft + tableWidth;
+            
+            // Determine Y boundary (lowest cell Y)
             let maxY = -Infinity;
-            let minX = Infinity;
-            let maxX = -Infinity;
-
             cells.forEach(c => {
                 if (c.y > maxY) maxY = c.y;
-                if (c.x < minX) minX = c.x;
-                if (c.x > maxX) maxX = c.x;
             });
 
-            // Default padding based on template
+            // Base Y for summary (below table + padding)
             const baseY = maxY + 65;
 
-            // Update Total Marks Label (ID 17)
+            // Update Total Marks Label (ID 17) - Align Left (first col approximate)
             const f17 = textFields.find(f => f.id === 17);
             if (f17) {
                 f17.y = baseY;
-                f17.x = minX; // Align with first column
+                f17.x = tableLeft + 100; // Indent slightly
             }
 
-            // Update Score (ID 18)
+            // Update Score (ID 18) - Align Right (last col approximate)
             const f18 = textFields.find(f => f.id === 18);
             if (f18) {
                 f18.y = baseY;
-                f18.x = maxX; // Align with last column
+                f18.x = tableRight - 100; // Indent slightly
             }
 
-            // Update Grade (ID 19)
+            // Update Grade (ID 19) - Center
             const f19 = textFields.find(f => f.id === 19);
             if (f19) {
                 f19.y = baseY + 60; 
-                f19.x = (minX + maxX) / 2; // Center
+                f19.x = CANVAS_WIDTH / 2;
             }
 
-            // Update Controller (ID 20)
+            // Update Controller (ID 20) - Right aligned
             const f20 = textFields.find(f => f.id === 20);
             if (f20) {
                 f20.y = baseY + 140;
-                f20.x = maxX + 50; 
+                f20.x = tableRight - 50; 
             }
         }
 
@@ -505,17 +535,14 @@
             const lastRowY = Math.max(...cells.filter(c => c.tableRow === maxRow).map(c => c.y));
             const rowHeight = 50; // Standard spacing
 
-            // Create new row cells
+            // Create new row cells - Initial X doesn't matter, recalculateTableLayout fixes it
             for (let c = 0; c <= maxCol; c++) {
-                const colSource = cells.find(cell => cell.tableCol === c);
-                const xPos = colSource ? colSource.x : 200 + (c * 200);
-                
                 const newId = Date.now() + Math.floor(Math.random() * 1000) + c;
-                const newCell = createCell(newId, "New Item", maxRow + 1, c, xPos, lastRowY + rowHeight);
+                const newCell = createCell(newId, "New Item", maxRow + 1, c, 0, lastRowY + rowHeight);
                 textFields.push(newCell);
             }
             
-            updateSummaryLayout();
+            recalculateTableLayout(); // Fixes X positions
             draw();
             renderLayers();
         }
@@ -528,7 +555,8 @@
             if (maxRow === 0) return; // Don't delete header row
 
             textFields = textFields.filter(f => !f.isTableCell || f.tableRow !== maxRow);
-            updateSummaryLayout();
+            
+            recalculateTableLayout(); // Ensure summary moves up
             draw();
             renderLayers();
         }
@@ -540,20 +568,18 @@
             const maxCol = Math.max(...cells.map(c => c.tableCol));
             const maxRow = Math.max(...cells.map(c => c.tableRow));
             
-            // Get X position of last col
-            const lastColX = Math.max(...cells.filter(c => c.tableCol === maxCol).map(c => c.x));
-            const colWidth = 200; 
-
             // Add cell to every existing row
             for (let r = 0; r <= maxRow; r++) {
                 const rowSource = cells.find(cell => cell.tableRow === r);
                 const yPos = rowSource ? rowSource.y : 300 + (r * 50);
                 
                 const newId = Date.now() + Math.floor(Math.random() * 1000) + r;
-                const newCell = createCell(newId, "Col " + (maxCol + 2), r, maxCol + 1, lastColX + colWidth, yPos);
+                // createCell(id, text, row, col, x, y, font...)
+                const newCell = createCell(newId, "Col " + (maxCol + 2), r, maxCol + 1, 0, yPos);
                 textFields.push(newCell);
             }
-            updateSummaryLayout();
+            
+            recalculateTableLayout(); // Resizes all columns to fit width
             draw();
             renderLayers();
         }
@@ -566,7 +592,8 @@
             if (maxCol === 0) return; 
 
             textFields = textFields.filter(f => !f.isTableCell || f.tableCol !== maxCol);
-            updateSummaryLayout();
+            
+            recalculateTableLayout(); // Resizes remaining columns
             draw();
             renderLayers();
         }
@@ -661,18 +688,18 @@
             const cells = getTableCells();
             if (cells.length === 0) return;
 
-            // Determine grid boundaries based on cell centers + padding
-            // We use simple heuristics: midpoints between adjacent rows/cols
-            
-            // Sort by Row then Col
-            const sortedByRow = [...cells].sort((a, b) => a.tableRow - b.tableRow);
-            const sortedByCol = [...cells].sort((a, b) => a.tableCol - b.tableCol);
+            // Recalculate logic uses a fixed table width of 900 centered
+            const tableWidth = 900;
+            const tableLeft = (CANVAS_WIDTH - tableWidth) / 2;
+            const tableRight = tableLeft + tableWidth;
 
-            // Get unique rows and cols
+            // Get unique rows/cols
             const rows = [...new Set(cells.map(c => c.tableRow))].sort((a, b) => a - b);
-            const cols = [...new Set(cells.map(c => c.tableCol))].sort((a, b) => a - b);
+            const numCols = new Set(cells.map(c => c.tableCol)).size;
+            
+            if (rows.length === 0 || numCols === 0) return;
 
-            if (rows.length === 0 || cols.length === 0) return;
+            const colWidth = tableWidth / Math.max(1, numCols);
 
             // Calculate Y coordinates for horizontal lines
             const rowYs = [];
@@ -695,26 +722,10 @@
                 }
             }
 
-            // Calculate X coordinates for vertical lines
-            // We assume table width is roughly defined by cell spacing
-            // We'll define column widths based on midpoint between column X centers
+            // Calculate X coordinates for vertical lines based on fixed width logic
             const colXs = [];
-            
-            // Find leftmost column X
-            const firstColX = cells.filter(c => c.tableCol === cols[0])[0].x;
-            colXs.push(firstColX - 150); // Left edge padding
-
-            for (let i = 0; i < cols.length; i++) {
-                const currentColX = cells.filter(c => c.tableCol === cols[i])[0].x;
-                const nextColX = (i < cols.length - 1)
-                    ? cells.filter(c => c.tableCol === cols[i+1])[0].x
-                    : currentColX + 300; // Fake right edge
-                
-                if (i < cols.length - 1) {
-                    colXs.push((currentColX + nextColX) / 2);
-                } else {
-                    colXs.push(currentColX + 150); // Right edge padding
-                }
+            for (let i = 0; i <= numCols; i++) {
+                colXs.push(tableLeft + (i * colWidth));
             }
 
             ctx.save();
@@ -723,11 +734,9 @@
             ctx.beginPath();
 
             // Draw Horizontal Lines
-            const startX = colXs[0];
-            const endX = colXs[colXs.length - 1];
             rowYs.forEach(y => {
-                ctx.moveTo(startX, y);
-                ctx.lineTo(endX, y);
+                ctx.moveTo(tableLeft, y);
+                ctx.lineTo(tableRight, y);
             });
 
             // Draw Vertical Lines

@@ -236,8 +236,9 @@
 
         let currentType = 'appreciation'; // Default
 
-        // PROFESSIONAL DESIGN PRESETS
+        // 15 PROFESSIONAL DESIGN PRESETS
         const designPresets = [
+            // Original 5
             {
                 name: "Imperial Gold",
                 borderColor: '#B48E43', // Gold
@@ -272,6 +273,77 @@
                 secondaryColor: '#f59e0b', // Amber/Gold
                 bgColor: '#fef2f2',
                 style: 'ribbon'
+            },
+            // New 10 Designs
+            {
+                name: "Tech Future",
+                borderColor: '#0f172a', // Slate 900
+                secondaryColor: '#8b5cf6', // Violet
+                bgColor: '#f8fafc',
+                style: 'tech'
+            },
+            {
+                name: "Vintage Parchment",
+                borderColor: '#78350f', // Amber 900
+                secondaryColor: '#b45309', // Amber 700
+                bgColor: '#fffbeb', // Amber 50
+                style: 'vintage'
+            },
+            {
+                name: "Royal Purple",
+                borderColor: '#581c87', // Purple 900
+                secondaryColor: '#facc15', // Yellow 400 (Gold)
+                bgColor: '#faf5ff', // Purple 50
+                style: 'imperial'
+            },
+            {
+                name: "Nature Eco",
+                borderColor: '#166534', // Green 700
+                secondaryColor: '#84cc16', // Lime 500
+                bgColor: '#f0fdf4', // Green 50
+                style: 'organic'
+            },
+            {
+                name: "Crimson Seal",
+                borderColor: '#7f1d1d', // Red 900
+                secondaryColor: '#450a0a', // Red 950
+                bgColor: '#fff1f2', // Rose 50
+                style: 'vintage'
+            },
+            {
+                name: "Ocean Wave",
+                borderColor: '#0e7490', // Cyan 700
+                secondaryColor: '#06b6d4', // Cyan 500
+                bgColor: '#ecfeff', // Cyan 50
+                style: 'guilloche'
+            },
+            {
+                name: "Art Deco Gold",
+                borderColor: '#000000', // Black
+                secondaryColor: '#d4af37', // Gold
+                bgColor: '#ffffff',
+                style: 'artdeco'
+            },
+            {
+                name: "Clean Silver",
+                borderColor: '#475569', // Slate 600
+                secondaryColor: '#94a3b8', // Slate 400
+                bgColor: '#f8fafc',
+                style: 'minimalist'
+            },
+            {
+                name: "Geometric Pop",
+                borderColor: '#ea580c', // Orange 600
+                secondaryColor: '#2563eb', // Blue 600
+                bgColor: '#fff7ed', // Orange 50
+                style: 'geometric'
+            },
+            {
+                name: "Azure Horizon",
+                borderColor: '#0369a1', // Sky 700
+                secondaryColor: '#bae6fd', // Sky 200
+                bgColor: '#f0f9ff', // Sky 50
+                style: 'modern' // Uses the thick modern border from original code logic
             }
         ];
 
@@ -634,6 +706,91 @@
                 ctx.arc(w/2, pad + 80, 20, 0, Math.PI, false);
                 ctx.fillStyle = col;
                 ctx.fill();
+            }
+            // NEW STYLES
+            else if (style === 'tech') {
+                // Tech Future
+                ctx.fillStyle = '#f1f5f9'; // Very light bg contrast
+                ctx.fillRect(pad, pad, w - pad*2, h - pad*2);
+                
+                ctx.strokeStyle = col;
+                ctx.lineWidth = 2;
+                ctx.strokeRect(pad, pad, w - pad*2, h - pad*2);
+                
+                // Corner Brackets
+                ctx.strokeStyle = sec;
+                ctx.lineWidth = 6;
+                const s = 60;
+                // TL
+                ctx.beginPath(); ctx.moveTo(pad, pad+s); ctx.lineTo(pad, pad); ctx.lineTo(pad+s, pad); ctx.stroke();
+                // TR
+                ctx.beginPath(); ctx.moveTo(w-pad-s, pad); ctx.lineTo(w-pad, pad); ctx.lineTo(w-pad, pad+s); ctx.stroke();
+                // BR
+                ctx.beginPath(); ctx.moveTo(w-pad, h-pad-s); ctx.lineTo(w-pad, h-pad); ctx.lineTo(w-pad-s, h-pad); ctx.stroke();
+                // BL
+                ctx.beginPath(); ctx.moveTo(pad+s, h-pad); ctx.lineTo(pad, h-pad); ctx.lineTo(pad, h-pad-s); ctx.stroke();
+            }
+            else if (style === 'vintage') {
+                // Vintage Parchment
+                ctx.strokeStyle = col;
+                ctx.lineWidth = 6;
+                ctx.strokeRect(pad, pad, w - pad*2, h - pad*2);
+                
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = sec;
+                ctx.strokeRect(pad+10, pad+10, w - (pad*2+20), h - (pad*2+20));
+                
+                // Dotted inner
+                ctx.setLineDash([10, 10]);
+                ctx.strokeRect(pad+20, pad+20, w - (pad*2+40), h - (pad*2+40));
+                ctx.setLineDash([]);
+            }
+            else if (style === 'organic') {
+                // Nature Eco
+                ctx.fillStyle = bgColor; // Ensure bg matches
+                
+                ctx.strokeStyle = col;
+                ctx.lineWidth = 4;
+                
+                // Rounded Rectangle Border
+                ctx.beginPath();
+                ctx.roundRect(pad, pad, w - pad*2, h - pad*2, 40);
+                ctx.stroke();
+                
+                // Leaf-like corner accents
+                ctx.fillStyle = sec;
+                ctx.beginPath();
+                ctx.arc(pad, pad, 60, 0, Math.PI/2, false);
+                ctx.lineTo(pad, pad);
+                ctx.fill();
+                
+                ctx.beginPath();
+                ctx.arc(w-pad, h-pad, 60, Math.PI, Math.PI*1.5, false);
+                ctx.lineTo(w-pad, h-pad);
+                ctx.fill();
+            }
+            else if (style === 'artdeco') {
+                // Art Deco Gold
+                ctx.lineWidth = 3;
+                ctx.strokeStyle = col;
+                ctx.strokeRect(pad, pad, w - pad*2, h - pad*2);
+                
+                ctx.strokeStyle = sec;
+                // Stepped Corners
+                const step = 15;
+                for(let i=1; i<=3; i++) {
+                    ctx.strokeRect(pad + i*step, pad + i*step, w - (pad*2 + i*step*2), h - (pad*2 + i*step*2));
+                }
+            }
+            else if (style === 'modern') {
+                // Thick solid border (Azure)
+                ctx.strokeStyle = col;
+                ctx.lineWidth = 20;
+                ctx.strokeRect(pad, pad, w - pad*2, h - pad*2);
+                
+                ctx.strokeStyle = sec;
+                ctx.lineWidth = 4;
+                ctx.strokeRect(pad+20, pad+20, w - (pad*2+40), h - (pad*2+40));
             }
 
             ctx.restore();

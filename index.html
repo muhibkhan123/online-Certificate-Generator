@@ -447,6 +447,53 @@
             return textFields.filter(f => f.isTableCell);
         }
 
+        function updateSummaryLayout() {
+            const cells = getTableCells();
+            if (cells.length === 0) return;
+
+            // Find boundaries
+            let maxY = -Infinity;
+            let minX = Infinity;
+            let maxX = -Infinity;
+
+            cells.forEach(c => {
+                if (c.y > maxY) maxY = c.y;
+                if (c.x < minX) minX = c.x;
+                if (c.x > maxX) maxX = c.x;
+            });
+
+            // Default padding based on template
+            const baseY = maxY + 65;
+
+            // Update Total Marks Label (ID 17)
+            const f17 = textFields.find(f => f.id === 17);
+            if (f17) {
+                f17.y = baseY;
+                f17.x = minX; // Align with first column
+            }
+
+            // Update Score (ID 18)
+            const f18 = textFields.find(f => f.id === 18);
+            if (f18) {
+                f18.y = baseY;
+                f18.x = maxX; // Align with last column
+            }
+
+            // Update Grade (ID 19)
+            const f19 = textFields.find(f => f.id === 19);
+            if (f19) {
+                f19.y = baseY + 60; 
+                f19.x = (minX + maxX) / 2; // Center
+            }
+
+            // Update Controller (ID 20)
+            const f20 = textFields.find(f => f.id === 20);
+            if (f20) {
+                f20.y = baseY + 140;
+                f20.x = maxX + 50; 
+            }
+        }
+
         function addTableRow() {
             const cells = getTableCells();
             if (cells.length === 0) return;
@@ -460,15 +507,15 @@
 
             // Create new row cells
             for (let c = 0; c <= maxCol; c++) {
-                // Find existing cell in this column to get X pos
                 const colSource = cells.find(cell => cell.tableCol === c);
                 const xPos = colSource ? colSource.x : 200 + (c * 200);
                 
-                const newId = Date.now() + c;
+                const newId = Date.now() + Math.floor(Math.random() * 1000) + c;
                 const newCell = createCell(newId, "New Item", maxRow + 1, c, xPos, lastRowY + rowHeight);
                 textFields.push(newCell);
             }
             
+            updateSummaryLayout();
             draw();
             renderLayers();
         }
@@ -478,9 +525,10 @@
             if (cells.length === 0) return;
             
             const maxRow = Math.max(...cells.map(c => c.tableRow));
-            if (maxRow === 0) return; // Don't delete header row (optional safety)
+            if (maxRow === 0) return; // Don't delete header row
 
             textFields = textFields.filter(f => !f.isTableCell || f.tableRow !== maxRow);
+            updateSummaryLayout();
             draw();
             renderLayers();
         }
@@ -501,10 +549,11 @@
                 const rowSource = cells.find(cell => cell.tableRow === r);
                 const yPos = rowSource ? rowSource.y : 300 + (r * 50);
                 
-                const newId = Date.now() + r;
+                const newId = Date.now() + Math.floor(Math.random() * 1000) + r;
                 const newCell = createCell(newId, "Col " + (maxCol + 2), r, maxCol + 1, lastColX + colWidth, yPos);
                 textFields.push(newCell);
             }
+            updateSummaryLayout();
             draw();
             renderLayers();
         }
@@ -517,6 +566,7 @@
             if (maxCol === 0) return; 
 
             textFields = textFields.filter(f => !f.isTableCell || f.tableCol !== maxCol);
+            updateSummaryLayout();
             draw();
             renderLayers();
         }

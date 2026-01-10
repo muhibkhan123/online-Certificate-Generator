@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Certificate Generator</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Great+Vibes&family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&family=Montserrat:wght@300;400;700&family=Open+Sans:wght@400;600&family=Pinyon+Script&family=Playfair+Display:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        #canvas-wrapper {
+            background-image: linear-gradient(45deg, #e5e7eb 25%, transparent 25%), 
+                              linear-gradient(-45deg, #e5e7eb 25%, transparent 25%), 
+                              linear-gradient(45deg, transparent 75%, #e5e7eb 75%), 
+                              linear-gradient(-45deg, transparent 75%, #e5e7eb 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .controls-panel::-webkit-scrollbar {
+            width: 6px;
+        }
+        .controls-panel::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        .controls-panel::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 3px;
+        }
+        /* Tab Active States */
+        .tab-btn.active {
+            background-color: #2563eb;
+            color: white;
+            border-color: #2563eb;
+        }
+        .tab-btn.inactive {
+            background-color: white;
+            color: #4b5563;
+            border-color: #e5e7eb;
+        }
+        .tab-btn.inactive:hover {
+            background-color: #f3f4f6;
+        }
+    </style>
+</head>
+<body class="h-screen flex flex-col overflow-hidden text-gray-800">
+
+    <!-- Top Header -->
+    <header class="bg-white px-6 py-3 flex items-center justify-between shrink-0 z-10 shadow-sm border-b border-gray-200">
+        <div class="flex items-center gap-3">
+            <div class="bg-gradient-to-br from-yellow-500 to-yellow-700 text-white p-2 rounded-lg shadow-sm">
+                <i data-lucide="award" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <h1 class="text-xl font-bold tracking-tight text-gray-900">Certificate Studio</h1>
+                <p class="text-xs text-gray-500">Professional Generator</p>
+            </div>
+        </div>
+        <button onclick="downloadCertificate()" class="flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 shadow-md transition-all active:scale-95">
+            <i data-lucide="download" class="w-4 h-4"></i>
+            <span>Download</span>
+        </button>
+    </header>
+
+    <!-- Certificate Type Navigation Tabs -->
+    <nav class="bg-gray-50 border-b border-gray-200 px-6 py-3 overflow-x-auto whitespace-nowrap scrollbar-hide shadow-inner">
+        <div class="flex gap-3 justify-center min-w-max">
+            <button onclick="loadTemplate('quran')" id="tab-quran" class="tab-btn inactive px-4 py-2 rounded-full text-sm font-semibold border transition-all flex items-center gap-2">
+                <i data-lucide="book-open" class="w-4 h-4"></i> Quran Certificate
+            </button>
+            <button onclick="loadTemplate('qaida')" id="tab-qaida" class="tab-btn inactive px-4 py-2 rounded-full text-sm font-semibold border transition-all flex items-center gap-2">
+                <i data-lucide="book" class="w-4 h-4"></i> Noorani Qaida
+            </button>
+            <button onclick="loadTemplate('appreciation')" id="tab-appreciation" class="tab-btn active px-4 py-2 rounded-full text-sm font-semibold border transition-all flex items-center gap-2">
+                <i data-lucide="star" class="w-4 h-4"></i> Appreciation
+            </button>
+            <button onclick="loadTemplate('leaving')" id="tab-leaving" class="tab-btn inactive px-4 py-2 rounded-full text-sm font-semibold border transition-all flex items-center gap-2">
+                <i data-lucide="graduation-cap" class="w-4 h-4"></i> Madrassa Leaving
+            </button>
+            <button onclick="loadTemplate('marks')" id="tab-marks" class="tab-btn inactive px-4 py-2 rounded-full text-sm font-semibold border transition-all flex items-center gap-2">
+                <i data-lucide="clipboard-list" class="w-4 h-4"></i> Exam Marks Sheet
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex overflow-hidden">
+        
+        <!-- Canvas Area -->
+        <div id="canvas-wrapper" class="flex-1 bg-gray-100 p-8 flex items-center justify-center overflow-auto relative">
+            <canvas id="certificateCanvas" class="bg-white shadow-2xl rounded-sm cursor-crosshair"></canvas>
+        </div>
+
+        <!-- Controls Sidebar -->
+        <aside class="w-96 bg-white border-l border-gray-200 flex flex-col shrink-0 z-20 shadow-xl">
+            
+            <!-- Sidebar Tabs -->
+            <div class="flex border-b border-gray-200">
+                <button onclick="switchSidebarTab('text')" id="sidebar-tab-text" class="flex-1 py-3 text-sm font-semibold text-blue-600 border-b-2 border-blue-600 bg-blue-50/50">
+                    Text Layers
+                </button>
+                <button onclick="switchSidebarTab('design')" id="sidebar-tab-design" class="flex-1 py-3 text-sm font-semibold text-gray-500 hover:text-gray-700">
+                    Design & Borders
+                </button>
+            </div>
+
+            <!-- Text Controls -->
+            <div id="panel-text" class="flex flex-col h-full overflow-hidden">
+                <div class="p-4 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
+                    <h2 class="font-bold text-gray-900 text-sm">Content</h2>
+                    <button onclick="addTextField()" class="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-300 rounded-md text-xs font-semibold hover:bg-gray-50 text-gray-700 shadow-sm">
+                        <i data-lucide="plus" class="w-3 h-3"></i> Add Text
+                    </button>
+                </div>
+                <div id="layers-list" class="flex-1 overflow-y-auto p-4 space-y-3 controls-panel bg-gray-50/30">
+                    <!-- Text Layers injected here -->
+                </div>
+            </div>
+
+            <!-- Design Controls -->
+            <div id="panel-design" class="hidden flex-col h-full overflow-y-auto p-6 space-y-6">
+                
+                <!-- Logo Section -->
+                <div class="space-y-3 pb-6 border-b border-gray-200">
+                    <h3 class="text-sm font-bold text-gray-900 uppercase tracking-wide">Logo</h3>
+                    <div class="flex flex-col gap-3">
+                        <div class="flex gap-2">
+                            <button onclick="document.getElementById('logoInput').click()" class="flex-1 py-2.5 bg-white border border-dashed border-gray-300 rounded-lg text-sm text-gray-600 hover:bg-blue-50 hover:border-blue-300 transition-colors flex items-center justify-center gap-2">
+                                <i data-lucide="upload" class="w-4 h-4"></i> 
+                                <span id="logo-btn-text">Upload Logo (PNG)</span>
+                            </button>
+                            <button onclick="removeLogo()" class="px-3 py-2 text-red-500 border border-gray-200 rounded-lg hover:bg-red-50 hover:border-red-200 transition-colors" title="Remove Logo">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                        <input type="file" id="logoInput" accept="image/png,image/jpeg" class="hidden" onchange="handleLogoUpload(event)">
+                        
+                        <!-- Logo Controls -->
+                        <div id="logo-controls" class="hidden space-y-4 bg-gray-50 p-3 rounded-lg border border-gray-100">
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <label class="text-xs font-semibold text-gray-500">Logo Size</label>
+                                    <span class="text-xs text-gray-400" id="logo-size-val">100px</span>
+                                </div>
+                                <input type="range" min="30" max="400" value="100" oninput="updateLogoConfig('size', this.value); document.getElementById('logo-size-val').innerText = this.value + 'px'" class="w-full">
+                            </div>
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <label class="text-xs font-semibold text-gray-500">Horizontal Position</label>
+                                    <span class="text-xs text-gray-400" id="logo-x-val">Center</span>
+                                </div>
+                                <input type="range" min="0" max="1200" value="600" oninput="updateLogoConfig('x', this.value); document.getElementById('logo-x-val').innerText = this.value + 'px'" class="w-full">
+                            </div>
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <label class="text-xs font-semibold text-gray-500">Vertical Position</label>
+                                    <span class="text-xs text-gray-400" id="logo-y-val">80px</span>
+                                </div>
+                                <input type="range" min="0" max="800" value="80" oninput="updateLogoConfig('y', this.value); document.getElementById('logo-y-val').innerText = this.value + 'px'" class="w-full">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <h3 class="text-sm font-bold text-gray-900 uppercase tracking-wide">Theme Colors</h3>
+                    
+                    <div>
+                        <label class="text-xs text-gray-500 mb-1.5 block">Border Color</label>
+                        <div class="flex gap-2 items-center">
+                            <input type="color" id="borderColor" value="#B48E43" oninput="updateDesign()" class="w-10 h-10 rounded cursor-pointer border-0 bg-transparent">
+                            <input type="text" value="#B48E43" oninput="document.getElementById('borderColor').value=this.value; updateDesign();" class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-md text-gray-600 font-mono">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-xs text-gray-500 mb-1.5 block">Background Tint</label>
+                        <div class="flex gap-2 items-center">
+                            <input type="color" id="bgColor" value="#FFFCF5" oninput="updateDesign()" class="w-10 h-10 rounded cursor-pointer border-0 bg-transparent">
+                            <input type="text" value="#FFFCF5" oninput="document.getElementById('bgColor').value=this.value; updateDesign();" class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-md text-gray-600 font-mono">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-3 pt-4 border-t border-gray-200">
+                    <h3 class="text-sm font-bold text-gray-900 uppercase tracking-wide">Layout</h3>
+                    
+                    <div class="flex items-center gap-3">
+                        <input type="checkbox" id="showCornerOrnaments" checked onchange="updateDesign()" class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500 border-gray-300">
+                        <label for="showCornerOrnaments" class="text-sm text-gray-700">Corner Ornaments</label>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <input type="checkbox" id="showInnerBorder" checked onchange="updateDesign()" class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500 border-gray-300">
+                        <label for="showInnerBorder" class="text-sm text-gray-700">Inner Line Border</label>
+                    </div>
+                </div>
+                
+                <div class="pt-6 mt-auto">
+                    <button onclick="resetDesign()" class="w-full py-2 text-sm text-gray-500 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                        Reset to Default Design
+                    </button>
+                </div>
+            </div>
+
+        </aside>
+    </main>
+
+    <script>
+        lucide.createIcons();
+
+        // --- Config & State ---
+        const canvas = document.getElementById('certificateCanvas');
+        const ctx = canvas.getContext('2d');
+        const layersList = document.getElementById('layers-list');
+
+        const CANVAS_WIDTH = 1200;
+        const CANVAS_HEIGHT = 850;
+
+        canvas.width = CANVAS_WIDTH;
+        canvas.height = CANVAS_HEIGHT;
+        canvas.style.maxWidth = '100%';
+        canvas.style.maxHeight = '85vh';
+
+        let currentType = 'appreciation'; // Default
+
+        let designConfig = {
+            borderColor: '#B48E43', 
+            bgColor: '#FFFCF5',
+            showCorners: true,
+            showInnerLine: true
+        };
+
+        let logoConfig = {
+            image: null,
+            size: 100, 
+            x: 600,    
+            y: 80      
+        };
+
+        let selectedFieldId = null;
+        let dragStart = { x: 0, y: 0 };
+
+        const fonts = [
+            "Alex Brush", "Great Vibes", "Pinyon Script",
+            "Cinzel", "Playfair Display",
+            "Montserrat", "Lato", "Open Sans", "Roboto", "Arial"
+        ];
+
+        // --- Certificate Data Presets ---
+        const templates = {
+            quran: {
+                title: "Quran Certificate",
+                fields: [
+                    { id: 1, text: "CERTIFICATE", x: 600, y: 170, fontSize: 60, fontFamily: "Cinzel", fontWeight: "700", color: "#1f2937", spacing: 5 },
+                    { id: 2, text: "OF COMPLETION OF HOLY QURAN", x: 600, y: 230, fontSize: 22, fontFamily: "Montserrat", fontWeight: "400", color: "#B48E43", spacing: 2 },
+                    { id: 3, text: "This is to certify that", x: 600, y: 310, fontSize: 16, fontFamily: "Lato", fontWeight: "400", color: "#6b7280", spacing: 1 },
+                    { id: 4, text: "Hafiz Abdullah", x: 600, y: 390, fontSize: 80, fontFamily: "Great Vibes", fontWeight: "400", color: "#1e40af", spacing: 0 },
+                    { id: 5, text: "Has successfully completed the memorization (Hifz)", x: 600, y: 470, fontSize: 18, fontFamily: "Open Sans", fontWeight: "400", color: "#4b5563", spacing: 0 },
+                    { id: 6, text: "of the Holy Quran with Tajweed rules.", x: 600, y: 500, fontSize: 18, fontFamily: "Open Sans", fontWeight: "400", color: "#4b5563", spacing: 0 },
+                    { id: 7, text: "Principal", x: 300, y: 650, fontSize: 24, fontFamily: "Alex Brush", fontWeight: "400", color: "#000000", spacing: 0 },
+                    { id: 8, text: "SIGNATURE", x: 300, y: 680, fontSize: 12, fontFamily: "Montserrat", fontWeight: "700", color: "#4b5563", spacing: 1 },
+                    { id: 9, text: "2026-05-20", x: 900, y: 650, fontSize: 18, fontFamily: "Lato", fontWeight: "400", color: "#000000", spacing: 0 },
+                    { id: 10, text: "DATE", x: 900, y: 680, fontSize: 12, fontFamily: "Montserrat", fontWeight: "700", color: "#4b5563", spacing: 1 },
+                ]
+            },
+            qaida: {
+                title: "Noorani Qaida Certificate",
+                fields: [
+                    { id: 1, text: "CERTIFICATE", x: 600, y: 170, fontSize: 60, fontFamily: "Cinzel", fontWeight: "700", color: "#1f2937", spacing: 5 },
+                    { id: 2, text: "OF NOORANI QAIDA COMPLETION", x: 600, y: 230, fontSize: 20, fontFamily: "Montserrat", fontWeight: "400", color: "#B48E43", spacing: 2 },
+                    { id: 3, text: "Proudly Presented To", x: 600, y: 310, fontSize: 16, fontFamily: "Lato", fontWeight: "400", color: "#6b7280", spacing: 1 },
+                    { id: 4, text: "Student Name", x: 600, y: 390, fontSize: 80, fontFamily: "Great Vibes", fontWeight: "400", color: "#059669", spacing: 0 },
+                    { id: 5, text: "For successfully learning the fundamentals of reciting", x: 600, y: 470, fontSize: 18, fontFamily: "Open Sans", fontWeight: "400", color: "#4b5563", spacing: 0 },
+                    { id: 6, text: "the Holy Quran through Noorani Qaida.", x: 600, y: 500, fontSize: 18, fontFamily: "Open Sans", fontWeight: "400", color: "#4b5563", spacing: 0 },
+                    { id: 7, text: "Teacher Name", x: 300, y: 650, fontSize: 24, fontFamily: "Alex Brush", fontWeight: "400", color: "#000000", spacing: 0 },
+                    { id: 8, text: "TEACHER", x: 300, y: 680, fontSize: 12, fontFamily: "Montserrat", fontWeight: "700", color: "#4b5563", spacing: 1 },
+                    { id: 9, text: "2026-01-15", x: 900, y: 650, fontSize: 18, fontFamily: "Lato", fontWeight: "400", color: "#000000", spacing: 0 },
+                    { id: 10, text: "DATE", x: 900, y: 680, fontSize: 12, fontFamily: "Montserrat", fontWeight: "700", color: "#4b5563", spacing: 1 },
+                ]
+            },
+            appreciation: {
+                title: "Appreciation Certificate",
+                fields: [
+                    { id: 1, text: "CERTIFICATE", x: 600, y: 170, fontSize: 70, fontFamily: "Cinzel", fontWeight: "700", color: "#1f2937", spacing: 5 },
+                    { id: 2, text: "OF APPRECIATION", x: 600, y: 230, fontSize: 24, fontFamily: "Montserrat", fontWeight: "400", color: "#B48E43", spacing: 3 },
+                    { id: 3, text: "PROUDLY PRESENTED TO", x: 600, y: 310, fontSize: 14, fontFamily: "Lato", fontWeight: "700", color: "#6b7280", spacing: 1 },
+                    { id: 4, text: "John Doe", x: 600, y: 390, fontSize: 90, fontFamily: "Great Vibes", fontWeight: "400", color: "#1e40af", spacing: 0 },
+                    { id: 5, text: "For outstanding performance and lasting contribution to", x: 600, y: 470, fontSize: 18, fontFamily: "Open Sans", fontWeight: "400", color: "#4b5563", spacing: 0 },
+                    { id: 6, text: "the success of our annual project.", x: 600, y: 500, fontSize: 18, fontFamily: "Open Sans", fontWeight: "400", color: "#4b5563", spacing: 0 },
+                    { id: 7, text: "Alexandra Smith", x: 300, y: 650, fontSize: 28, fontFamily: "Alex Brush", fontWeight: "400", color: "#000000", spacing: 0 },
+                    { id: 8, text: "DIRECTOR", x: 300, y: 680, fontSize: 12, fontFamily: "Montserrat", fontWeight: "700", color: "#4b5563", spacing: 1 },
+                    { id: 9, text: "January 10, 2026", x: 900, y: 650, fontSize: 20, fontFamily: "Lato", fontWeight: "400", color: "#000000", spacing: 0 },
+                    { id: 10, text: "DATE", x: 900, y: 680, fontSize: 12, fontFamily: "Montserrat", fontWeight: "700", color: "#4b5563", spacing: 1 },
+                ]
+            },
+            leaving: {
+                title: "Madrassa Leaving Certificate",
+                fields: [
+                    { id: 1, text: "MADRASSA LEAVING", x: 600, y: 160, fontSize: 50, fontFamily: "Cinzel", fontWeight: "700", color: "#1f2937", spacing: 3 },
+                    { id: 2, text: "CERTIFICATE", x: 600, y: 220, fontSize: 30, fontFamily: "Cinzel", fontWeight: "700", color: "#1f2937", spacing: 5 },
+                    { id: 3, text: "This is to certify that", x: 600, y: 300, fontSize: 16, fontFamily: "Lato", fontWeight: "400", color: "#6b7280", spacing: 1 },
+                    { id: 4, text: "Student Name", x: 600, y: 360, fontSize: 60, fontFamily: "Playfair Display", fontWeight: "700", color: "#1f2937", spacing: 0 },
+                    { id: 5, text: "Son/Daughter of [Father's Name]", x: 600, y: 410, fontSize: 18, fontFamily: "Lato", fontWeight: "400", color: "#4b5563", spacing: 0 },
+                    { id: 6, text: "Has been a student of this institute from 2024 to 2026.", x: 600, y: 460, fontSize: 18, fontFamily: "Open Sans", fontWeight: "400", color: "#4b5563", spacing: 0 },
+                    { id: 7, text: "During this period, his/her conduct and character was:", x: 600, y: 500, fontSize: 18, fontFamily: "Open Sans", fontWeight: "400", color: "#4b5563", spacing: 0 },
+                    { id: 8, text: "EXCELLENT", x: 600, y: 540, fontSize: 24, fontFamily: "Montserrat", fontWeight: "700", color: "#059669", spacing: 2 },
+                    { id: 9, text: "Principal", x: 300, y: 660, fontSize: 24, fontFamily: "Alex Brush", fontWeight: "400", color: "#000000", spacing: 0 },
+                    { id: 10, text: "SIGNATURE", x: 300, y: 690, fontSize: 12, fontFamily: "Montserrat", fontWeight: "700", color: "#4b5563", spacing: 1 },
+                ]
+            },
+            marks: {
+                title: "Exam Marks Sheet",
+                fields: [
+                    { id: 1, text: "RESULT CARD", x: 600, y: 140, fontSize: 50, fontFamily: "Cinzel", fontWeight: "700", color: "#1f2937", spacing: 3 },
+                    { id: 2, text: "ANNUAL EXAMINATION 2026", x: 600, y: 190, fontSize: 18, fontFamily: "Montserrat", fontWeight: "700", color: "#B48E43", spacing: 2 },
+                    
+                    { id: 3, text: "Student: Muhammad Ali", x: 300, y: 250, fontSize: 20, fontFamily: "Lato", fontWeight: "700", color: "#1f2937", spacing: 0 },
+                    { id: 4, text: "Roll No: 12345", x: 900, y: 250, fontSize: 20, fontFamily: "Lato", fontWeight: "700", color: "#1f2937", spacing: 0 },
+
+                    // Headers
+                    { id: 5, text: "SUBJECT", x: 400, y: 320, fontSize: 16, fontFamily: "Montserrat", fontWeight: "700", color: "#4b5563", spacing: 1 },
+                    { id: 6, text: "TOTAL", x: 600, y: 320, fontSize: 16, fontFamily: "Montserrat", fontWeight: "700", color: "#4b5563", spacing: 1 },
+                    { id: 7, text: "OBTAINED", x: 800, y: 320, fontSize: 16, fontFamily: "Montserrat", fontWeight: "700", color: "#4b5563", spacing: 1 },
+
+                    // Row 1
+                    { id: 8, text: "Tajweed / Nazira", x: 400, y: 370, fontSize: 18, fontFamily: "Lato", fontWeight: "400", color: "#000000", spacing: 0 },
+                    { id: 9, text: "100", x: 600, y: 370, fontSize: 18, fontFamily: "Lato", fontWeight: "400", color: "#000000", spacing: 0 },
+                    { id: 10, text: "95", x: 800, y: 370, fontSize: 18, fontFamily: "Lato", fontWeight: "400", color: "#000000", spacing: 0 },
+
+                    // Row 2
+                    { id: 11, text: "Hifz", x: 400, y: 410, fontSize: 18, fontFamily: "Lato", fontWeight: "400", color: "#000000", spacing: 0 },
+                    { id: 12, text: "100", x: 600, y: 410, fontSize: 18, fontFamily: "Lato", fontWeight: "400", color: "#000000", spacing: 0 },
+                    { id: 13, text: "88", x: 800, y: 410, fontSize: 18, fontFamily: "Lato", fontWeight: "400", color: "#000000", spacing: 0 },
+
+                    // Row 3
+                    { id: 14, text: "Ethics / Adab", x: 400, y: 450, fontSize: 18, fontFamily: "Lato", fontWeight: "400", color: "#000000", spacing: 0 },
+                    { id: 15, text: "100", x: 600, y: 450, fontSize: 18, fontFamily: "Lato", fontWeight: "400", color: "#000000", spacing: 0 },
+                    { id: 16, text: "92", x: 800, y: 450, fontSize: 18, fontFamily: "Lato", fontWeight: "400", color: "#000000", spacing: 0 },
+
+                    // Summary
+                    { id: 17, text: "TOTAL MARKS", x: 400, y: 520, fontSize: 16, fontFamily: "Montserrat", fontWeight: "700", color: "#1f2937", spacing: 1 },
+                    { id: 18, text: "275 / 300", x: 800, y: 520, fontSize: 20, fontFamily: "Lato", fontWeight: "700", color: "#1e40af", spacing: 0 },
+
+                    { id: 19, text: "GRADE: A+", x: 600, y: 580, fontSize: 24, fontFamily: "Cinzel", fontWeight: "700", color: "#059669", spacing: 2 },
+
+                    { id: 20, text: "Controller of Exams", x: 900, y: 680, fontSize: 18, fontFamily: "Alex Brush", fontWeight: "400", color: "#000000", spacing: 0 },
+                ]
+            }
+        };
+
+        let textFields = JSON.parse(JSON.stringify(templates.appreciation.fields)); // Init with Deep Copy
+
+        // --- Core Functions ---
+
+        function loadTemplate(type) {
+            currentType = type;
+            
+            // Deep copy fields to avoid reference issues
+            textFields = JSON.parse(JSON.stringify(templates[type].fields));
+            
+            // Update UI Tabs
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+                btn.classList.add('inactive');
+            });
+            const activeBtn = document.getElementById('tab-' + type);
+            if(activeBtn) {
+                activeBtn.classList.remove('inactive');
+                activeBtn.classList.add('active');
+            }
+
+            draw();
+            renderLayers();
+        }
+
+        function draw() {
+            // 1. Fill Background
+            ctx.fillStyle = designConfig.bgColor;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // 2. Draw Decorative Border
+            drawCertificateBorder();
+
+            // 3. Draw Logo
+            drawLogo();
+
+            // 4. Special Drawing for Marks Sheet
+            if (currentType === 'marks') {
+                drawMarksTable();
+            } else {
+                drawSignatureLines();
+            }
+
+            // 5. Draw Text
+            textFields.forEach(field => {
+                ctx.save();
+                const weight = field.fontWeight || '400';
+                ctx.font = `${weight} ${field.fontSize}px "${field.fontFamily}"`;
+                ctx.fillStyle = field.color;
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                if (field.spacing > 0) canvas.style.letterSpacing = `${field.spacing}px`; 
+
+                // Selection Box
+                if (field.id === selectedFieldId) {
+                    const metrics = ctx.measureText(field.text);
+                    const width = metrics.width;
+                    const height = field.fontSize;
+                    ctx.strokeStyle = "#3b82f6";
+                    ctx.lineWidth = 2;
+                    ctx.setLineDash([5, 5]);
+                    ctx.strokeRect(field.x - width/2 - 10, field.y - height/2 - 5, width + 20, height + 10);
+                    ctx.setLineDash([]);
+                }
+
+                ctx.fillText(field.text, field.x, field.y);
+                ctx.restore();
+            });
+        }
+
+        function drawMarksTable() {
+            ctx.save();
+            ctx.strokeStyle = "#9ca3af";
+            ctx.lineWidth = 1;
+            
+            // Horizontal lines for the table simulation
+            // Header Line
+            ctx.beginPath(); ctx.moveTo(250, 340); ctx.lineTo(950, 340); ctx.stroke();
+            // Row 1 Line
+            ctx.beginPath(); ctx.moveTo(250, 390); ctx.lineTo(950, 390); ctx.stroke();
+            // Row 2 Line
+            ctx.beginPath(); ctx.moveTo(250, 430); ctx.lineTo(950, 430); ctx.stroke();
+            // Row 3 Line
+            ctx.beginPath(); ctx.moveTo(250, 470); ctx.lineTo(950, 470); ctx.stroke();
+            // Bottom Line
+            ctx.beginPath(); ctx.moveTo(250, 490); ctx.lineTo(950, 490); ctx.stroke();
+
+            // Vertical divider lines (Optional, kept simple for now)
+            ctx.restore();
+        }
+
+        function drawLogo() {
+            if (!logoConfig.image) return;
+            const img = logoConfig.image;
+            const aspectRatio = img.width / img.height;
+            const w = parseInt(logoConfig.size);
+            const h = w / aspectRatio;
+            const x = parseInt(logoConfig.x) - (w / 2);
+            const y = parseInt(logoConfig.y);
+            ctx.save();
+            ctx.drawImage(img, x, y, w, h);
+            ctx.restore();
+        }
+
+        function drawCertificateBorder() {
+            const pad = 40;
+            const w = canvas.width;
+            const h = canvas.height;
+            const col = designConfig.borderColor;
+
+            ctx.save();
+            ctx.strokeStyle = col;
+            ctx.lineWidth = 10;
+            ctx.strokeRect(pad, pad, w - pad*2, h - pad*2);
+
+            if (designConfig.showInnerLine) {
+                ctx.lineWidth = 2;
+                ctx.strokeRect(pad + 8, pad + 8, w - (pad*2 + 16), h - (pad*2 + 16));
+                ctx.lineWidth = 1;
+                ctx.strokeStyle = col + '80';
+                ctx.strokeRect(pad + 20, pad + 20, w - (pad*2 + 40), h - (pad*2 + 40));
+            }
+
+            if (designConfig.showCorners) {
+                const cornerSize = 80;
+                ctx.strokeStyle = col;
+                ctx.lineWidth = 3;
+                drawCorner(pad + 25, pad + 25, cornerSize, 0);
+                drawCorner(w - pad - 25, pad + 25, cornerSize, Math.PI * 0.5);
+                drawCorner(w - pad - 25, h - pad - 25, cornerSize, Math.PI);
+                drawCorner(pad + 25, h - pad - 25, cornerSize, Math.PI * 1.5);
+            }
+            ctx.restore();
+        }
+
+        function drawCorner(x, y, size, rotation) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(rotation);
+            ctx.beginPath();
+            ctx.moveTo(0, size);
+            ctx.quadraticCurveTo(0, 0, size, 0);
+            ctx.moveTo(0, size - 10);
+            ctx.quadraticCurveTo(5, 5, size - 10, 0);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.arc(10, 10, 3, 0, Math.PI * 2);
+            ctx.fillStyle = ctx.strokeStyle;
+            ctx.fill();
+            ctx.restore();
+        }
+
+        function drawSignatureLines() {
+            ctx.save();
+            ctx.strokeStyle = "#9ca3af";
+            ctx.lineWidth = 1.5;
+            // Left Line
+            ctx.beginPath(); ctx.moveTo(200, 640); ctx.lineTo(400, 640); ctx.stroke();
+            // Right Line
+            ctx.beginPath(); ctx.moveTo(800, 640); ctx.lineTo(1000, 640); ctx.stroke();
+            ctx.restore();
+        }
+
+        // --- Interaction & UI ---
+        function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            const clientX = e.clientX || (e.touches ? e.touches[0].clientX : 0);
+            const clientY = e.clientY || (e.touches ? e.touches[0].clientY : 0);
+            return { x: (clientX - rect.left) * scaleX, y: (clientY - rect.top) * scaleY };
+        }
+
+        function handleStart(e) {
+            const pos = getPos(e);
+            for (let i = textFields.length - 1; i >= 0; i--) {
+                const field = textFields[i];
+                const weight = field.fontWeight || '400';
+                ctx.font = `${weight} ${field.fontSize}px "${field.fontFamily}"`;
+                const metrics = ctx.measureText(field.text);
+                const w = metrics.width;
+                const h = field.fontSize;
+                if (pos.x >= field.x - w/2 - 20 && pos.x <= field.x + w/2 + 20 &&
+                    pos.y >= field.y - h/2 - 20 && pos.y <= field.y + h/2 + 20) {
+                    selectedFieldId = field.id;
+                    field.isDragging = true;
+                    dragStart = { x: pos.x - field.x, y: pos.y - field.y };
+                    renderLayers();
+                    draw();
+                    return;
+                }
+            }
+            selectedFieldId = null;
+            renderLayers();
+            draw();
+        }
+
+        function handleMove(e) {
+            e.preventDefault();
+            let dirty = false;
+            const pos = getPos(e);
+            textFields.forEach(field => {
+                if (field.isDragging) {
+                    field.x = pos.x - dragStart.x;
+                    field.y = pos.y - dragStart.y;
+                    dirty = true;
+                }
+            });
+            if (dirty) { canvas.style.cursor = 'grabbing'; draw(); } 
+            else { canvas.style.cursor = 'crosshair'; }
+        }
+
+        function handleEnd() {
+            textFields.forEach(f => f.isDragging = false);
+            canvas.style.cursor = 'crosshair';
+        }
+
+        canvas.addEventListener('mousedown', handleStart);
+        canvas.addEventListener('mousemove', handleMove);
+        window.addEventListener('mouseup', handleEnd);
+        canvas.addEventListener('touchstart', handleStart, {passive: false});
+        canvas.addEventListener('touchmove', handleMove, {passive: false});
+        canvas.addEventListener('touchend', handleEnd);
+
+        function renderLayers() {
+            layersList.innerHTML = '';
+            textFields.forEach(field => {
+                const isSelected = field.id === selectedFieldId;
+                const div = document.createElement('div');
+                div.className = `p-3 rounded-lg border transition-all ${isSelected ? 'bg-white border-blue-500 shadow ring-1 ring-blue-500' : 'bg-white border-gray-200 hover:border-gray-300'}`;
+                div.innerHTML = `
+                    <div class="space-y-3" onclick="selectField(${field.id})">
+                        <div class="flex gap-2">
+                            <input type="text" value="${field.text}" oninput="updateField(${field.id}, 'text', this.value)"
+                                class="flex-1 min-w-0 px-2 py-1 bg-gray-50 border border-gray-200 rounded text-sm font-semibold text-gray-800">
+                            <button onclick="deleteField(${field.id}, event)" class="text-gray-400 hover:text-red-500 px-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <select onchange="updateField(${field.id}, 'fontFamily', this.value)" class="col-span-2 px-2 py-1 bg-gray-50 border border-gray-200 rounded text-xs">
+                                ${fonts.map(f => `<option value="${f}" ${field.fontFamily === f ? 'selected' : ''}>${f}</option>`).join('')}
+                            </select>
+                            <div class="flex items-center gap-1 border border-gray-200 rounded px-2 bg-gray-50"><span class="text-[10px] text-gray-500">Sz</span><input type="number" value="${field.fontSize}" oninput="updateField(${field.id}, 'fontSize', this.value)" class="w-full bg-transparent border-0 py-1 text-xs"></div>
+                            <div class="flex items-center gap-1 border border-gray-200 rounded px-2 bg-gray-50"><input type="color" value="${field.color}" oninput="updateField(${field.id}, 'color', this.value)" class="w-4 h-4 rounded-full border-0 p-0"><span class="text-[10px] text-gray-500 ml-auto">${field.color}</span></div>
+                        </div>
+                    </div>`;
+                layersList.appendChild(div);
+            });
+            lucide.createIcons();
+        }
+
+        function updateField(id, key, val) {
+            const f = textFields.find(x => x.id === id);
+            if (f) { f[key] = val; draw(); }
+        }
+        function selectField(id) { selectedFieldId = id; draw(); renderLayers(); }
+        function addTextField() {
+            const id = Date.now();
+            textFields.push({ id: id, text: "New Text", x: CANVAS_WIDTH/2, y: CANVAS_HEIGHT/2, fontSize: 40, fontFamily: "Lato", color: "#000000", isDragging: false });
+            selectedFieldId = id; draw(); renderLayers();
+        }
+        function deleteField(id, e) {
+            e.stopPropagation();
+            textFields = textFields.filter(x => x.id !== id);
+            draw(); renderLayers();
+        }
+
+        // Sidebar Tabs
+        function switchSidebarTab(tab) {
+            document.getElementById('panel-text').classList.add('hidden');
+            document.getElementById('panel-design').classList.add('hidden');
+            document.getElementById('panel-design').classList.remove('flex');
+            
+            document.getElementById('sidebar-tab-text').className = "flex-1 py-3 text-sm font-semibold text-gray-500 hover:text-gray-700 border-b border-gray-200";
+            document.getElementById('sidebar-tab-design').className = "flex-1 py-3 text-sm font-semibold text-gray-500 hover:text-gray-700 border-b border-gray-200";
+
+            if (tab === 'text') {
+                document.getElementById('panel-text').classList.remove('hidden');
+                document.getElementById('sidebar-tab-text').className = "flex-1 py-3 text-sm font-semibold text-blue-600 border-b-2 border-blue-600 bg-blue-50/50";
+            } else {
+                document.getElementById('panel-design').classList.remove('hidden');
+                document.getElementById('panel-design').classList.add('flex');
+                document.getElementById('sidebar-tab-design').className = "flex-1 py-3 text-sm font-semibold text-blue-600 border-b-2 border-blue-600 bg-blue-50/50";
+            }
+        }
+
+        // Design & Logo
+        function updateDesign() {
+            designConfig.borderColor = document.getElementById('borderColor').value;
+            designConfig.bgColor = document.getElementById('bgColor').value;
+            designConfig.showCorners = document.getElementById('showCornerOrnaments').checked;
+            designConfig.showInnerLine = document.getElementById('showInnerBorder').checked;
+            draw();
+        }
+        function resetDesign() {
+            document.getElementById('borderColor').value = '#B48E43';
+            document.getElementById('bgColor').value = '#FFFCF5';
+            document.getElementById('showCornerOrnaments').checked = true;
+            document.getElementById('showInnerBorder').checked = true;
+            updateDesign();
+        }
+        function handleLogoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    logoConfig.image = img;
+                    document.getElementById('logo-controls').classList.remove('hidden');
+                    document.getElementById('logo-btn-text').innerText = "Change Logo";
+                    draw();
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+        function removeLogo() {
+            logoConfig.image = null;
+            document.getElementById('logo-controls').classList.add('hidden');
+            document.getElementById('logo-btn-text').innerText = "Upload Logo (PNG)";
+            document.getElementById('logoInput').value = ''; 
+            draw();
+        }
+        function updateLogoConfig(key, value) { logoConfig[key] = parseInt(value); draw(); }
+        function downloadCertificate() {
+            const prev = selectedFieldId; selectedFieldId = null; draw();
+            const link = document.createElement('a');
+            link.download = `Certificate-${currentType}.png`;
+            link.href = canvas.toDataURL('image/png', 1.0);
+            link.click();
+            selectedFieldId = prev; draw();
+        }
+
+        // Initial Load
+        draw(); renderLayers();
+    </script>
+</body>
+</html>

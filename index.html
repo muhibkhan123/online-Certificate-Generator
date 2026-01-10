@@ -267,6 +267,9 @@
                     { id: 4, text: "Hafiz Abdullah", x: 600, y: 390, fontSize: 80, fontFamily: "Great Vibes", fontWeight: "400", color: "#1e40af", spacing: 0 },
                     // Merged fields for multi-line description
                     { id: 5, text: "Has successfully completed the memorization (Hifz)\nof the Holy Quran with Tajweed rules.", x: 600, y: 480, fontSize: 18, fontFamily: "Open Sans", fontWeight: "400", color: "#4b5563", spacing: 0 },
+                    // Lines as text fields
+                    { id: 11, text: "______________________", x: 300, y: 640, fontSize: 20, fontFamily: "Arial", fontWeight: "400", color: "#9ca3af", spacing: 0 },
+                    { id: 12, text: "______________________", x: 900, y: 640, fontSize: 20, fontFamily: "Arial", fontWeight: "400", color: "#9ca3af", spacing: 0 },
                     { id: 7, text: "Principal", x: 300, y: 650, fontSize: 24, fontFamily: "Alex Brush", fontWeight: "400", color: "#000000", spacing: 0 },
                     { id: 8, text: "SIGNATURE", x: 300, y: 680, fontSize: 12, fontFamily: "Montserrat", fontWeight: "700", color: "#4b5563", spacing: 1 },
                     { id: 9, text: "2026-05-20", x: 900, y: 650, fontSize: 18, fontFamily: "Lato", fontWeight: "400", color: "#000000", spacing: 0 },
@@ -281,6 +284,9 @@
                     { id: 3, text: "Proudly Presented To", x: 600, y: 310, fontSize: 16, fontFamily: "Lato", fontWeight: "400", color: "#6b7280", spacing: 1 },
                     { id: 4, text: "Student Name", x: 600, y: 390, fontSize: 80, fontFamily: "Great Vibes", fontWeight: "400", color: "#059669", spacing: 0 },
                     { id: 5, text: "For successfully learning the fundamentals of reciting\nthe Holy Quran through Noorani Qaida.", x: 600, y: 480, fontSize: 18, fontFamily: "Open Sans", fontWeight: "400", color: "#4b5563", spacing: 0 },
+                    // Lines as text fields
+                    { id: 11, text: "______________________", x: 300, y: 640, fontSize: 20, fontFamily: "Arial", fontWeight: "400", color: "#9ca3af", spacing: 0 },
+                    { id: 12, text: "______________________", x: 900, y: 640, fontSize: 20, fontFamily: "Arial", fontWeight: "400", color: "#9ca3af", spacing: 0 },
                     { id: 7, text: "Teacher Name", x: 300, y: 650, fontSize: 24, fontFamily: "Alex Brush", fontWeight: "400", color: "#000000", spacing: 0 },
                     { id: 8, text: "TEACHER", x: 300, y: 680, fontSize: 12, fontFamily: "Montserrat", fontWeight: "700", color: "#4b5563", spacing: 1 },
                     { id: 9, text: "2026-01-15", x: 900, y: 650, fontSize: 18, fontFamily: "Lato", fontWeight: "400", color: "#000000", spacing: 0 },
@@ -295,6 +301,9 @@
                     { id: 3, text: "PROUDLY PRESENTED TO", x: 600, y: 310, fontSize: 14, fontFamily: "Lato", fontWeight: "700", color: "#6b7280", spacing: 1 },
                     { id: 4, text: "John Doe", x: 600, y: 390, fontSize: 90, fontFamily: "Great Vibes", fontWeight: "400", color: "#1e40af", spacing: 0 },
                     { id: 5, text: "For outstanding performance and lasting contribution to\nthe success of our annual project.", x: 600, y: 480, fontSize: 18, fontFamily: "Open Sans", fontWeight: "400", color: "#4b5563", spacing: 0 },
+                    // Lines as text fields
+                    { id: 11, text: "______________________", x: 300, y: 640, fontSize: 20, fontFamily: "Arial", fontWeight: "400", color: "#9ca3af", spacing: 0 },
+                    { id: 12, text: "______________________", x: 900, y: 640, fontSize: 20, fontFamily: "Arial", fontWeight: "400", color: "#9ca3af", spacing: 0 },
                     { id: 7, text: "Alexandra Smith", x: 300, y: 650, fontSize: 28, fontFamily: "Alex Brush", fontWeight: "400", color: "#000000", spacing: 0 },
                     { id: 8, text: "DIRECTOR", x: 300, y: 680, fontSize: 12, fontFamily: "Montserrat", fontWeight: "700", color: "#4b5563", spacing: 1 },
                     { id: 9, text: "January 10, 2026", x: 900, y: 650, fontSize: 20, fontFamily: "Lato", fontWeight: "400", color: "#000000", spacing: 0 },
@@ -311,6 +320,9 @@
                     { id: 5, text: "Son/Daughter of [Father's Name]", x: 600, y: 410, fontSize: 18, fontFamily: "Lato", fontWeight: "400", color: "#4b5563", spacing: 0 },
                     { id: 6, text: "Has been a student of this institute from 2024 to 2026.\nDuring this period, his/her conduct and character was:", x: 600, y: 480, fontSize: 18, fontFamily: "Open Sans", fontWeight: "400", color: "#4b5563", spacing: 0 },
                     { id: 8, text: "EXCELLENT", x: 600, y: 540, fontSize: 24, fontFamily: "Montserrat", fontWeight: "700", color: "#059669", spacing: 2 },
+                    // Lines as text fields
+                    { id: 11, text: "______________________", x: 300, y: 650, fontSize: 20, fontFamily: "Arial", fontWeight: "400", color: "#9ca3af", spacing: 0 },
+                    { id: 12, text: "______________________", x: 900, y: 650, fontSize: 20, fontFamily: "Arial", fontWeight: "400", color: "#9ca3af", spacing: 0 },
                     { id: 9, text: "Principal", x: 300, y: 660, fontSize: 24, fontFamily: "Alex Brush", fontWeight: "400", color: "#000000", spacing: 0 },
                     { id: 10, text: "SIGNATURE", x: 300, y: 690, fontSize: 12, fontFamily: "Montserrat", fontWeight: "700", color: "#4b5563", spacing: 1 },
                 ]
@@ -394,8 +406,6 @@
             // 4. Special Drawing for Marks Sheet
             if (currentType === 'marks') {
                 drawMarksTable();
-            } else {
-                drawSignatureLines();
             }
 
             // 5. Draw Text
@@ -530,17 +540,6 @@
             ctx.arc(10, 10, 3, 0, Math.PI * 2);
             ctx.fillStyle = ctx.strokeStyle;
             ctx.fill();
-            ctx.restore();
-        }
-
-        function drawSignatureLines() {
-            ctx.save();
-            ctx.strokeStyle = "#9ca3af";
-            ctx.lineWidth = 1.5;
-            // Left Line
-            ctx.beginPath(); ctx.moveTo(200, 640); ctx.lineTo(400, 640); ctx.stroke();
-            // Right Line
-            ctx.beginPath(); ctx.moveTo(800, 640); ctx.lineTo(1000, 640); ctx.stroke();
             ctx.restore();
         }
 

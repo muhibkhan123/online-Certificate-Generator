@@ -210,8 +210,24 @@
         </aside>
 
         <!-- Canvas Area -->
-        <div id="canvas-wrapper" class="flex-1 bg-gray-100 p-8 flex items-center justify-center overflow-auto relative">
+        <div id="canvas-wrapper" class="flex-1 bg-gray-100 p-8 flex items-center justify-center overflow-auto relative group select-none">
+            
+            <!-- Left Design Button -->
+            <button onclick="changeDesign(-1)" class="absolute left-6 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-blue-600 hover:text-white p-3 rounded-full shadow-xl text-gray-600 transition-all opacity-0 group-hover:opacity-100 focus:opacity-100 z-10 transform hover:scale-110" title="Previous Design">
+                <i data-lucide="chevron-left" class="w-8 h-8"></i>
+            </button>
+
             <canvas id="certificateCanvas" class="bg-white shadow-2xl rounded-sm cursor-crosshair"></canvas>
+
+            <!-- Right Design Button -->
+            <button onclick="changeDesign(1)" class="absolute right-6 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-blue-600 hover:text-white p-3 rounded-full shadow-xl text-gray-600 transition-all opacity-0 group-hover:opacity-100 focus:opacity-100 z-10 transform hover:scale-110" title="Next Design">
+                <i data-lucide="chevron-right" class="w-8 h-8"></i>
+            </button>
+
+            <!-- Design Name Badge -->
+            <div id="design-label" class="absolute bottom-6 left-1/2 -translate-x-1/2 bg-gray-900/80 backdrop-blur text-white px-5 py-2 rounded-full text-sm font-semibold shadow-lg opacity-0 group-hover:opacity-100 transition-all pointer-events-none translate-y-2 group-hover:translate-y-0">
+                Classic Gold
+            </div>
         </div>
 
     </main>
@@ -234,12 +250,52 @@
 
         let currentType = 'appreciation'; // Default
 
-        let designConfig = {
-            borderColor: '#B48E43', 
-            bgColor: '#FFFCF5',
-            showCorners: true,
-            showInnerLine: true
-        };
+        // Design Presets
+        const designPresets = [
+            {
+                name: "Classic Gold",
+                borderColor: '#B48E43',
+                bgColor: '#FFFCF5',
+                showCorners: true,
+                showInnerLine: true,
+                style: 'classic'
+            },
+            {
+                name: "Modern Blue",
+                borderColor: '#1e40af',
+                bgColor: '#eff6ff',
+                showCorners: false,
+                showInnerLine: true,
+                style: 'modern'
+            },
+            {
+                name: "Elegant Black",
+                borderColor: '#1f2937',
+                bgColor: '#ffffff',
+                showCorners: true,
+                showInnerLine: false,
+                style: 'formal'
+            },
+            {
+                name: "Corporate Green",
+                borderColor: '#059669',
+                bgColor: '#f0fdf4',
+                showCorners: false,
+                showInnerLine: true,
+                style: 'minimal'
+            },
+            {
+                name: "Royal Red",
+                borderColor: '#991b1b',
+                bgColor: '#fef2f2',
+                showCorners: true,
+                showInnerLine: true,
+                style: 'ornate'
+            }
+        ];
+
+        let currentDesignIndex = 0;
+        let designConfig = { ...designPresets[0] };
 
         let logoConfig = {
             image: null,
@@ -405,6 +461,27 @@
             renderLayers();
         }
 
+        // --- Design Switching ---
+        function changeDesign(direction) {
+            currentDesignIndex = (currentDesignIndex + direction + designPresets.length) % designPresets.length;
+            const preset = designPresets[currentDesignIndex];
+            
+            // Update Config
+            designConfig = { ...designConfig, ...preset };
+            
+            // Update UI Inputs
+            document.getElementById('borderColor').value = designConfig.borderColor;
+            document.getElementById('bgColor').value = designConfig.bgColor;
+            document.getElementById('showCornerOrnaments').checked = designConfig.showCorners;
+            document.getElementById('showInnerBorder').checked = designConfig.showInnerLine;
+            
+            // Update Label
+            const label = document.getElementById('design-label');
+            if(label) label.innerText = preset.name;
+            
+            draw();
+        }
+
         function draw() {
             // 1. Fill Background
             ctx.fillStyle = designConfig.bgColor;
@@ -489,28 +566,59 @@
             const w = canvas.width;
             const h = canvas.height;
             const col = designConfig.borderColor;
+            const style = designConfig.style || 'classic';
 
             ctx.save();
             ctx.strokeStyle = col;
-            ctx.lineWidth = 10;
-            ctx.strokeRect(pad, pad, w - pad*2, h - pad*2);
 
-            if (designConfig.showInnerLine) {
+            if (style === 'modern') {
+                // Modern: Thick single border, no inner line usually
+                ctx.lineWidth = 20;
+                ctx.strokeRect(pad, pad, w - pad*2, h - pad*2);
+            } 
+            else if (style === 'minimal') {
+                // Minimal: Thin elegant border
                 ctx.lineWidth = 2;
-                ctx.strokeRect(pad + 8, pad + 8, w - (pad*2 + 16), h - (pad*2 + 16));
+                ctx.strokeRect(pad, pad, w - pad*2, h - pad*2);
+                if (designConfig.showInnerLine) {
+                    ctx.lineWidth = 1;
+                    ctx.strokeStyle = col + '60';
+                    ctx.strokeRect(pad + 10, pad + 10, w - (pad*2 + 20), h - (pad*2 + 20));
+                }
+            } 
+            else if (style === 'formal') {
+                // Formal: Double border
+                ctx.lineWidth = 5;
+                ctx.strokeRect(pad, pad, w - pad*2, h - pad*2);
                 ctx.lineWidth = 1;
-                ctx.strokeStyle = col + '80';
-                ctx.strokeRect(pad + 20, pad + 20, w - (pad*2 + 40), h - (pad*2 + 40));
+                ctx.strokeRect(pad + 8, pad + 8, w - (pad*2 + 16), h - (pad*2 + 16));
+            }
+            else {
+                // Classic / Ornate / Default
+                ctx.lineWidth = 10;
+                ctx.strokeRect(pad, pad, w - pad*2, h - pad*2);
+
+                if (designConfig.showInnerLine) {
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(pad + 8, pad + 8, w - (pad*2 + 16), h - (pad*2 + 16));
+                    ctx.lineWidth = 1;
+                    ctx.strokeStyle = col + '80';
+                    ctx.strokeRect(pad + 20, pad + 20, w - (pad*2 + 40), h - (pad*2 + 40));
+                }
             }
 
             if (designConfig.showCorners) {
                 const cornerSize = 80;
                 ctx.strokeStyle = col;
                 ctx.lineWidth = 3;
-                drawCorner(pad + 25, pad + 25, cornerSize, 0);
-                drawCorner(w - pad - 25, pad + 25, cornerSize, Math.PI * 0.5);
-                drawCorner(w - pad - 25, h - pad - 25, cornerSize, Math.PI);
-                drawCorner(pad + 25, h - pad - 25, cornerSize, Math.PI * 1.5);
+                
+                // Only draw fancy corners for classic/ornate styles
+                if (style === 'classic' || style === 'ornate' || style === 'formal') {
+                    drawCorner(pad + 25, pad + 25, cornerSize, 0);
+                    drawCorner(w - pad - 25, pad + 25, cornerSize, Math.PI * 0.5);
+                    drawCorner(w - pad - 25, h - pad - 25, cornerSize, Math.PI);
+                    drawCorner(pad + 25, h - pad - 25, cornerSize, Math.PI * 1.5);
+                }
             }
             ctx.restore();
         }
@@ -525,10 +633,13 @@
             ctx.moveTo(0, size - 10);
             ctx.quadraticCurveTo(5, 5, size - 10, 0);
             ctx.stroke();
+            
+            // Simple dot for classic
             ctx.beginPath();
             ctx.arc(10, 10, 3, 0, Math.PI * 2);
             ctx.fillStyle = ctx.strokeStyle;
             ctx.fill();
+            
             ctx.restore();
         }
 

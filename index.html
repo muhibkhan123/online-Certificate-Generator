@@ -110,6 +110,29 @@
 
             <!-- Text Controls -->
             <div id="panel-text" class="flex flex-col h-full overflow-hidden">
+                
+                <!-- Table Actions (Conditional) -->
+                <div id="table-actions" class="hidden p-3 bg-blue-50 border-b border-blue-100 flex-col gap-2">
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-xs font-bold text-blue-800 uppercase tracking-wide">Table Actions</span>
+                        <span class="text-[10px] text-blue-600">Press Tab to add row</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="addTableCol()" class="px-2 py-1.5 bg-white border border-blue-200 rounded text-xs font-semibold text-blue-700 hover:bg-blue-100 flex items-center justify-center gap-1">
+                            <i data-lucide="columns" class="w-3 h-3"></i> Add Col
+                        </button>
+                        <button onclick="addTableRow()" class="px-2 py-1.5 bg-white border border-blue-200 rounded text-xs font-semibold text-blue-700 hover:bg-blue-100 flex items-center justify-center gap-1">
+                            <i data-lucide="rows" class="w-3 h-3"></i> Add Row
+                        </button>
+                        <button onclick="removeTableCol()" class="px-2 py-1.5 bg-white border border-red-200 rounded text-xs font-semibold text-red-600 hover:bg-red-50 flex items-center justify-center gap-1">
+                            <i data-lucide="minus" class="w-3 h-3"></i> Del Col
+                        </button>
+                        <button onclick="removeTableRow()" class="px-2 py-1.5 bg-white border border-red-200 rounded text-xs font-semibold text-red-600 hover:bg-red-50 flex items-center justify-center gap-1">
+                            <i data-lucide="minus" class="w-3 h-3"></i> Del Row
+                        </button>
+                    </div>
+                </div>
+
                 <div class="p-4 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
                     <h2 class="font-bold text-gray-900 text-sm">Content</h2>
                     <button onclick="addTextField()" class="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-300 rounded-md text-xs font-semibold hover:bg-gray-50 text-gray-700 shadow-sm">
@@ -239,112 +262,22 @@
         // 15 PROFESSIONAL DESIGN PRESETS
         const designPresets = [
             // Original 5
-            {
-                name: "Imperial Gold",
-                borderColor: '#B48E43', // Gold
-                secondaryColor: '#F3E5AB', // Pale Gold
-                bgColor: '#FFFCF5',
-                style: 'imperial'
-            },
-            {
-                name: "Corporate Blue",
-                borderColor: '#1e3a8a', // Dark Blue
-                secondaryColor: '#3b82f6', // Light Blue
-                bgColor: '#ffffff',
-                style: 'geometric'
-            },
-            {
-                name: "Academic Green",
-                borderColor: '#14532d', // Dark Green
-                secondaryColor: '#d97706', // Amber
-                bgColor: '#fdfbf7', // Parchment-ish
-                style: 'guilloche'
-            },
-            {
-                name: "Modern Minimal",
-                borderColor: '#18181b', // Zinc 900
-                secondaryColor: '#e4e4e7', // Zinc 200
-                bgColor: '#ffffff',
-                style: 'minimalist'
-            },
-            {
-                name: "Grand Award",
-                borderColor: '#991b1b', // Red
-                secondaryColor: '#f59e0b', // Amber/Gold
-                bgColor: '#fef2f2',
-                style: 'ribbon'
-            },
+            { name: "Imperial Gold", borderColor: '#B48E43', secondaryColor: '#F3E5AB', bgColor: '#FFFCF5', style: 'imperial' },
+            { name: "Corporate Blue", borderColor: '#1e3a8a', secondaryColor: '#3b82f6', bgColor: '#ffffff', style: 'geometric' },
+            { name: "Academic Green", borderColor: '#14532d', secondaryColor: '#d97706', bgColor: '#fdfbf7', style: 'guilloche' },
+            { name: "Modern Minimal", borderColor: '#18181b', secondaryColor: '#e4e4e7', bgColor: '#ffffff', style: 'minimalist' },
+            { name: "Grand Award", borderColor: '#991b1b', secondaryColor: '#f59e0b', bgColor: '#fef2f2', style: 'ribbon' },
             // New 10 Designs
-            {
-                name: "Tech Future",
-                borderColor: '#0f172a', // Slate 900
-                secondaryColor: '#8b5cf6', // Violet
-                bgColor: '#f8fafc',
-                style: 'tech'
-            },
-            {
-                name: "Vintage Parchment",
-                borderColor: '#78350f', // Amber 900
-                secondaryColor: '#b45309', // Amber 700
-                bgColor: '#fffbeb', // Amber 50
-                style: 'vintage'
-            },
-            {
-                name: "Royal Purple",
-                borderColor: '#581c87', // Purple 900
-                secondaryColor: '#facc15', // Yellow 400 (Gold)
-                bgColor: '#faf5ff', // Purple 50
-                style: 'imperial'
-            },
-            {
-                name: "Nature Eco",
-                borderColor: '#166534', // Green 700
-                secondaryColor: '#84cc16', // Lime 500
-                bgColor: '#f0fdf4', // Green 50
-                style: 'organic'
-            },
-            {
-                name: "Crimson Seal",
-                borderColor: '#7f1d1d', // Red 900
-                secondaryColor: '#450a0a', // Red 950
-                bgColor: '#fff1f2', // Rose 50
-                style: 'vintage'
-            },
-            {
-                name: "Ocean Wave",
-                borderColor: '#0e7490', // Cyan 700
-                secondaryColor: '#06b6d4', // Cyan 500
-                bgColor: '#ecfeff', // Cyan 50
-                style: 'guilloche'
-            },
-            {
-                name: "Art Deco Gold",
-                borderColor: '#000000', // Black
-                secondaryColor: '#d4af37', // Gold
-                bgColor: '#ffffff',
-                style: 'artdeco'
-            },
-            {
-                name: "Clean Silver",
-                borderColor: '#475569', // Slate 600
-                secondaryColor: '#94a3b8', // Slate 400
-                bgColor: '#f8fafc',
-                style: 'minimalist'
-            },
-            {
-                name: "Geometric Pop",
-                borderColor: '#ea580c', // Orange 600
-                secondaryColor: '#2563eb', // Blue 600
-                bgColor: '#fff7ed', // Orange 50
-                style: 'geometric'
-            },
-            {
-                name: "Azure Horizon",
-                borderColor: '#0369a1', // Sky 700
-                secondaryColor: '#bae6fd', // Sky 200
-                bgColor: '#f0f9ff', // Sky 50
-                style: 'modern' // Uses the thick modern border from original code logic
-            }
+            { name: "Tech Future", borderColor: '#0f172a', secondaryColor: '#8b5cf6', bgColor: '#f8fafc', style: 'tech' },
+            { name: "Vintage Parchment", borderColor: '#78350f', secondaryColor: '#b45309', bgColor: '#fffbeb', style: 'vintage' },
+            { name: "Royal Purple", borderColor: '#581c87', secondaryColor: '#facc15', bgColor: '#faf5ff', style: 'imperial' },
+            { name: "Nature Eco", borderColor: '#166534', secondaryColor: '#84cc16', bgColor: '#f0fdf4', style: 'organic' },
+            { name: "Crimson Seal", borderColor: '#7f1d1d', secondaryColor: '#450a0a', bgColor: '#fff1f2', style: 'vintage' },
+            { name: "Ocean Wave", borderColor: '#0e7490', secondaryColor: '#06b6d4', bgColor: '#ecfeff', style: 'guilloche' },
+            { name: "Art Deco Gold", borderColor: '#000000', secondaryColor: '#d4af37', bgColor: '#ffffff', style: 'artdeco' },
+            { name: "Clean Silver", borderColor: '#475569', secondaryColor: '#94a3b8', bgColor: '#f8fafc', style: 'minimalist' },
+            { name: "Geometric Pop", borderColor: '#ea580c', secondaryColor: '#2563eb', bgColor: '#fff7ed', style: 'geometric' },
+            { name: "Azure Horizon", borderColor: '#0369a1', secondaryColor: '#bae6fd', bgColor: '#f0f9ff', style: 'modern' }
         ];
 
         let currentDesignIndex = 0;
@@ -367,6 +300,11 @@
         ];
 
         // --- Certificate Data Presets ---
+        // Helper to create table cell
+        function createCell(id, text, row, col, x, y, font = "Lato", size = 18, color = "#000000", weight = "400") {
+            return { id, text, x, y, fontSize: size, fontFamily: font, fontWeight: weight, color, spacing: 0, isTableCell: true, tableRow: row, tableCol: col };
+        }
+
         const templates = {
             quran: {
                 title: "Quran Certificate",
@@ -375,9 +313,7 @@
                     { id: 2, text: "OF COMPLETION OF HOLY QURAN", x: 600, y: 230, fontSize: 22, fontFamily: "Montserrat", fontWeight: "400", color: "#B48E43", spacing: 2 },
                     { id: 3, text: "This is to certify that", x: 600, y: 310, fontSize: 16, fontFamily: "Lato", fontWeight: "400", color: "#6b7280", spacing: 1 },
                     { id: 4, text: "Hafiz Abdullah", x: 600, y: 390, fontSize: 80, fontFamily: "Great Vibes", fontWeight: "400", color: "#1e40af", spacing: 0 },
-                    // Merged fields for multi-line description
                     { id: 5, text: "Has successfully completed the memorization (Hifz)\nof the Holy Quran with Tajweed rules.", x: 600, y: 480, fontSize: 18, fontFamily: "Open Sans", fontWeight: "400", color: "#4b5563", spacing: 0 },
-                    // Lines as text fields
                     { id: 11, text: "______________________", x: 300, y: 640, fontSize: 20, fontFamily: "Arial", fontWeight: "400", color: "#9ca3af", spacing: 0 },
                     { id: 12, text: "______________________", x: 900, y: 640, fontSize: 20, fontFamily: "Arial", fontWeight: "400", color: "#9ca3af", spacing: 0 },
                     { id: 7, text: "Principal", x: 300, y: 650, fontSize: 24, fontFamily: "Alex Brush", fontWeight: "400", color: "#000000", spacing: 0 },
@@ -394,7 +330,6 @@
                     { id: 3, text: "Proudly Presented To", x: 600, y: 310, fontSize: 16, fontFamily: "Lato", fontWeight: "400", color: "#6b7280", spacing: 1 },
                     { id: 4, text: "Student Name", x: 600, y: 390, fontSize: 80, fontFamily: "Great Vibes", fontWeight: "400", color: "#059669", spacing: 0 },
                     { id: 5, text: "For successfully learning the fundamentals of reciting\nthe Holy Quran through Noorani Qaida.", x: 600, y: 480, fontSize: 18, fontFamily: "Open Sans", fontWeight: "400", color: "#4b5563", spacing: 0 },
-                    // Lines as text fields
                     { id: 11, text: "______________________", x: 300, y: 640, fontSize: 20, fontFamily: "Arial", fontWeight: "400", color: "#9ca3af", spacing: 0 },
                     { id: 12, text: "______________________", x: 900, y: 640, fontSize: 20, fontFamily: "Arial", fontWeight: "400", color: "#9ca3af", spacing: 0 },
                     { id: 7, text: "Teacher Name", x: 300, y: 650, fontSize: 24, fontFamily: "Alex Brush", fontWeight: "400", color: "#000000", spacing: 0 },
@@ -411,7 +346,6 @@
                     { id: 3, text: "PROUDLY PRESENTED TO", x: 600, y: 310, fontSize: 14, fontFamily: "Lato", fontWeight: "700", color: "#6b7280", spacing: 1 },
                     { id: 4, text: "John Doe", x: 600, y: 390, fontSize: 90, fontFamily: "Great Vibes", fontWeight: "400", color: "#1e40af", spacing: 0 },
                     { id: 5, text: "For outstanding performance and lasting contribution to\nthe success of our annual project.", x: 600, y: 480, fontSize: 18, fontFamily: "Open Sans", fontWeight: "400", color: "#4b5563", spacing: 0 },
-                    // Lines as text fields
                     { id: 11, text: "______________________", x: 300, y: 640, fontSize: 20, fontFamily: "Arial", fontWeight: "400", color: "#9ca3af", spacing: 0 },
                     { id: 12, text: "______________________", x: 900, y: 640, fontSize: 20, fontFamily: "Arial", fontWeight: "400", color: "#9ca3af", spacing: 0 },
                     { id: 7, text: "Alexandra Smith", x: 300, y: 650, fontSize: 28, fontFamily: "Alex Brush", fontWeight: "400", color: "#000000", spacing: 0 },
@@ -430,7 +364,6 @@
                     { id: 5, text: "Son/Daughter of [Father's Name]", x: 600, y: 410, fontSize: 18, fontFamily: "Lato", fontWeight: "400", color: "#4b5563", spacing: 0 },
                     { id: 6, text: "Has been a student of this institute from 2024 to 2026.\nDuring this period, his/her conduct and character was:", x: 600, y: 480, fontSize: 18, fontFamily: "Open Sans", fontWeight: "400", color: "#4b5563", spacing: 0 },
                     { id: 8, text: "EXCELLENT", x: 600, y: 540, fontSize: 24, fontFamily: "Montserrat", fontWeight: "700", color: "#059669", spacing: 2 },
-                    // Lines as text fields
                     { id: 11, text: "______________________", x: 300, y: 650, fontSize: 20, fontFamily: "Arial", fontWeight: "400", color: "#9ca3af", spacing: 0 },
                     { id: 12, text: "______________________", x: 900, y: 650, fontSize: 20, fontFamily: "Arial", fontWeight: "400", color: "#9ca3af", spacing: 0 },
                     { id: 9, text: "Principal", x: 300, y: 660, fontSize: 24, fontFamily: "Alex Brush", fontWeight: "400", color: "#000000", spacing: 0 },
@@ -446,27 +379,23 @@
                     { id: 3, text: "Student: Muhammad Ali", x: 300, y: 250, fontSize: 20, fontFamily: "Lato", fontWeight: "700", color: "#1f2937", spacing: 0 },
                     { id: 4, text: "Roll No: 12345", x: 900, y: 250, fontSize: 20, fontFamily: "Lato", fontWeight: "700", color: "#1f2937", spacing: 0 },
 
-                    // Headers
-                    { id: 5, text: "SUBJECT", x: 400, y: 325, fontSize: 16, fontFamily: "Montserrat", fontWeight: "700", color: "#4b5563", spacing: 1 },
-                    { id: 6, text: "TOTAL", x: 650, y: 325, fontSize: 16, fontFamily: "Montserrat", fontWeight: "700", color: "#4b5563", spacing: 1 },
-                    { id: 7, text: "OBTAINED", x: 850, y: 325, fontSize: 16, fontFamily: "Montserrat", fontWeight: "700", color: "#4b5563", spacing: 1 },
+                    // Table Data with Metadata
+                    createCell(5, "SUBJECT", 0, 0, 400, 325, "Montserrat", 16, "#4b5563", "700"),
+                    createCell(6, "TOTAL", 0, 1, 650, 325, "Montserrat", 16, "#4b5563", "700"),
+                    createCell(7, "OBTAINED", 0, 2, 850, 325, "Montserrat", 16, "#4b5563", "700"),
 
-                    // Row 1
-                    { id: 8, text: "Tajweed / Nazira", x: 400, y: 375, fontSize: 18, fontFamily: "Lato", fontWeight: "400", color: "#000000", spacing: 0 },
-                    { id: 9, text: "100", x: 650, y: 375, fontSize: 18, fontFamily: "Lato", fontWeight: "400", color: "#000000", spacing: 0 },
-                    { id: 10, text: "95", x: 850, y: 375, fontSize: 18, fontFamily: "Lato", fontWeight: "400", color: "#000000", spacing: 0 },
+                    createCell(8, "Tajweed / Nazira", 1, 0, 400, 375, "Lato", 18, "#000000", "400"),
+                    createCell(9, "100", 1, 1, 650, 375, "Lato", 18, "#000000", "400"),
+                    createCell(10, "95", 1, 2, 850, 375, "Lato", 18, "#000000", "400"),
 
-                    // Row 2
-                    { id: 11, text: "Hifz", x: 400, y: 425, fontSize: 18, fontFamily: "Lato", fontWeight: "400", color: "#000000", spacing: 0 },
-                    { id: 12, text: "100", x: 650, y: 425, fontSize: 18, fontFamily: "Lato", fontWeight: "400", color: "#000000", spacing: 0 },
-                    { id: 13, text: "88", x: 850, y: 425, fontSize: 18, fontFamily: "Lato", fontWeight: "400", color: "#000000", spacing: 0 },
+                    createCell(11, "Hifz", 2, 0, 400, 425, "Lato", 18, "#000000", "400"),
+                    createCell(12, "100", 2, 1, 650, 425, "Lato", 18, "#000000", "400"),
+                    createCell(13, "88", 2, 2, 850, 425, "Lato", 18, "#000000", "400"),
 
-                    // Row 3
-                    { id: 14, text: "Ethics / Adab", x: 400, y: 475, fontSize: 18, fontFamily: "Lato", fontWeight: "400", color: "#000000", spacing: 0 },
-                    { id: 15, text: "100", x: 650, y: 475, fontSize: 18, fontFamily: "Lato", fontWeight: "400", color: "#000000", spacing: 0 },
-                    { id: 16, text: "92", x: 850, y: 475, fontSize: 18, fontFamily: "Lato", fontWeight: "400", color: "#000000", spacing: 0 },
+                    createCell(14, "Ethics / Adab", 3, 0, 400, 475, "Lato", 18, "#000000", "400"),
+                    createCell(15, "100", 3, 1, 650, 475, "Lato", 18, "#000000", "400"),
+                    createCell(16, "92", 3, 2, 850, 475, "Lato", 18, "#000000", "400"),
 
-                    // Summary
                     { id: 17, text: "TOTAL MARKS", x: 400, y: 540, fontSize: 16, fontFamily: "Montserrat", fontWeight: "700", color: "#1f2937", spacing: 1 },
                     { id: 18, text: "275 / 300", x: 850, y: 540, fontSize: 20, fontFamily: "Lato", fontWeight: "700", color: "#1e40af", spacing: 0 },
 
@@ -497,7 +426,97 @@
                 activeBtn.classList.remove('inactive');
                 activeBtn.classList.add('active');
             }
+            
+            // Toggle Table Controls Visibility
+            const tableActions = document.getElementById('table-actions');
+            if (type === 'marks') {
+                tableActions.classList.remove('hidden');
+                tableActions.classList.add('flex');
+            } else {
+                tableActions.classList.add('hidden');
+                tableActions.classList.remove('flex');
+            }
 
+            draw();
+            renderLayers();
+        }
+
+        // --- Table Management Functions ---
+        
+        function getTableCells() {
+            return textFields.filter(f => f.isTableCell);
+        }
+
+        function addTableRow() {
+            const cells = getTableCells();
+            if (cells.length === 0) return;
+
+            const maxRow = Math.max(...cells.map(c => c.tableRow));
+            const maxCol = Math.max(...cells.map(c => c.tableCol));
+            
+            // Get Y position of last row
+            const lastRowY = Math.max(...cells.filter(c => c.tableRow === maxRow).map(c => c.y));
+            const rowHeight = 50; // Standard spacing
+
+            // Create new row cells
+            for (let c = 0; c <= maxCol; c++) {
+                // Find existing cell in this column to get X pos
+                const colSource = cells.find(cell => cell.tableCol === c);
+                const xPos = colSource ? colSource.x : 200 + (c * 200);
+                
+                const newId = Date.now() + c;
+                const newCell = createCell(newId, "New Item", maxRow + 1, c, xPos, lastRowY + rowHeight);
+                textFields.push(newCell);
+            }
+            
+            draw();
+            renderLayers();
+        }
+
+        function removeTableRow() {
+            const cells = getTableCells();
+            if (cells.length === 0) return;
+            
+            const maxRow = Math.max(...cells.map(c => c.tableRow));
+            if (maxRow === 0) return; // Don't delete header row (optional safety)
+
+            textFields = textFields.filter(f => !f.isTableCell || f.tableRow !== maxRow);
+            draw();
+            renderLayers();
+        }
+
+        function addTableCol() {
+            const cells = getTableCells();
+            if (cells.length === 0) return;
+
+            const maxCol = Math.max(...cells.map(c => c.tableCol));
+            const maxRow = Math.max(...cells.map(c => c.tableRow));
+            
+            // Get X position of last col
+            const lastColX = Math.max(...cells.filter(c => c.tableCol === maxCol).map(c => c.x));
+            const colWidth = 200; 
+
+            // Add cell to every existing row
+            for (let r = 0; r <= maxRow; r++) {
+                const rowSource = cells.find(cell => cell.tableRow === r);
+                const yPos = rowSource ? rowSource.y : 300 + (r * 50);
+                
+                const newId = Date.now() + r;
+                const newCell = createCell(newId, "Col " + (maxCol + 2), r, maxCol + 1, lastColX + colWidth, yPos);
+                textFields.push(newCell);
+            }
+            draw();
+            renderLayers();
+        }
+
+        function removeTableCol() {
+            const cells = getTableCells();
+            if (cells.length === 0) return;
+            
+            const maxCol = Math.max(...cells.map(c => c.tableCol));
+            if (maxCol === 0) return; 
+
+            textFields = textFields.filter(f => !f.isTableCell || f.tableCol !== maxCol);
             draw();
             renderLayers();
         }
@@ -532,7 +551,7 @@
             // 3. Draw Logo
             drawLogo();
 
-            // 4. Special Drawing for Marks Sheet
+            // 4. Special Drawing for Marks Sheet (Draw Dynamic Grid)
             if (currentType === 'marks') {
                 drawMarksTable();
             }
@@ -580,8 +599,6 @@
 
                 // Render each line
                 lines.forEach((line, index) => {
-                    // Calculate offset to center the text block vertically around field.y
-                    // yOffset shifts lines up/down so field.y is the visual center
                     const yOffset = (index - (lines.length - 1) / 2) * lineHeight;
                     ctx.fillText(line, field.x, field.y + yOffset);
                 });
@@ -591,40 +608,87 @@
         }
 
         function drawMarksTable() {
-            const tableTop = 300;
-            const tableBottom = 500;
-            const col1 = 250; // Start X
-            const col2 = 550; // Vertical Divider 1
-            const col3 = 750; // Vertical Divider 2
-            const colEnd = 950; // End X
+            const cells = getTableCells();
+            if (cells.length === 0) return;
+
+            // Determine grid boundaries based on cell centers + padding
+            // We use simple heuristics: midpoints between adjacent rows/cols
             
+            // Sort by Row then Col
+            const sortedByRow = [...cells].sort((a, b) => a.tableRow - b.tableRow);
+            const sortedByCol = [...cells].sort((a, b) => a.tableCol - b.tableCol);
+
+            // Get unique rows and cols
+            const rows = [...new Set(cells.map(c => c.tableRow))].sort((a, b) => a - b);
+            const cols = [...new Set(cells.map(c => c.tableCol))].sort((a, b) => a - b);
+
+            if (rows.length === 0 || cols.length === 0) return;
+
+            // Calculate Y coordinates for horizontal lines
+            const rowYs = [];
+            // Top line: row 0 Y - 30 (padding)
+            const firstRowY = cells.filter(c => c.tableRow === rows[0])[0].y;
+            rowYs.push(firstRowY - 30);
+
+            for (let i = 0; i < rows.length; i++) {
+                const currentRowY = cells.filter(c => c.tableRow === rows[i])[0].y;
+                const nextRowY = (i < rows.length - 1) 
+                    ? cells.filter(c => c.tableRow === rows[i+1])[0].y 
+                    : currentRowY + 60; // Default height for last row
+                
+                // Line is midpoint
+                if (i < rows.length - 1) {
+                    rowYs.push((currentRowY + nextRowY) / 2);
+                } else {
+                    // Last bottom line
+                    rowYs.push(currentRowY + 30);
+                }
+            }
+
+            // Calculate X coordinates for vertical lines
+            // We assume table width is roughly defined by cell spacing
+            // We'll define column widths based on midpoint between column X centers
+            const colXs = [];
+            
+            // Find leftmost column X
+            const firstColX = cells.filter(c => c.tableCol === cols[0])[0].x;
+            colXs.push(firstColX - 150); // Left edge padding
+
+            for (let i = 0; i < cols.length; i++) {
+                const currentColX = cells.filter(c => c.tableCol === cols[i])[0].x;
+                const nextColX = (i < cols.length - 1)
+                    ? cells.filter(c => c.tableCol === cols[i+1])[0].x
+                    : currentColX + 300; // Fake right edge
+                
+                if (i < cols.length - 1) {
+                    colXs.push((currentColX + nextColX) / 2);
+                } else {
+                    colXs.push(currentColX + 150); // Right edge padding
+                }
+            }
+
             ctx.save();
-            ctx.strokeStyle = "#9ca3af"; // Gray border
+            ctx.strokeStyle = "#9ca3af";
             ctx.lineWidth = 2;
-            
-            // Draw Outer Box
-            ctx.strokeRect(col1, tableTop, colEnd - col1, tableBottom - tableTop);
-            
-            // Horizontal Lines
-            const rows = [350, 400, 450]; // Y positions for lines
-            rows.forEach(y => {
-                ctx.beginPath();
-                ctx.moveTo(col1, y);
-                ctx.lineTo(colEnd, y);
-                ctx.stroke();
+            ctx.beginPath();
+
+            // Draw Horizontal Lines
+            const startX = colXs[0];
+            const endX = colXs[colXs.length - 1];
+            rowYs.forEach(y => {
+                ctx.moveTo(startX, y);
+                ctx.lineTo(endX, y);
             });
 
-            // Vertical Lines
-            ctx.beginPath();
-            ctx.moveTo(col2, tableTop);
-            ctx.lineTo(col2, tableBottom);
-            ctx.stroke();
+            // Draw Vertical Lines
+            const startY = rowYs[0];
+            const endY = rowYs[rowYs.length - 1];
+            colXs.forEach(x => {
+                ctx.moveTo(x, startY);
+                ctx.lineTo(x, endY);
+            });
 
-            ctx.beginPath();
-            ctx.moveTo(col3, tableTop);
-            ctx.lineTo(col3, tableBottom);
             ctx.stroke();
-            
             ctx.restore();
         }
 
@@ -942,13 +1006,19 @@
                 const div = document.createElement('div');
                 div.className = `p-3 rounded-lg border transition-all ${isSelected ? 'bg-white border-blue-500 shadow ring-1 ring-blue-500' : 'bg-white border-gray-200 hover:border-gray-300'}`;
                 
+                // Count lines for textarea height
                 const lineCount = field.text.toString().split('\n').length;
                 const rowCount = lineCount > 1 ? lineCount : 1;
 
+                // Handle Tab for Table Rows
+                const onKeyDown = field.isTableCell ? `onkeydown="if(event.key==='Tab'){ event.preventDefault(); addTableRow(); }"` : '';
+
                 div.innerHTML = `
                     <div class="flex gap-3" onclick="selectField(${field.id})">
+                        <!-- Left: Input Area -->
                         <div class="flex-1 min-w-0 flex flex-col">
                             <textarea 
+                                ${onKeyDown}
                                 oninput="updateField(${field.id}, 'text', this.value)"
                                 onclick="event.stopPropagation()"
                                 onfocus="selectField(${field.id}, true)"
@@ -957,6 +1027,7 @@
                                 placeholder="Enter text...">${field.text}</textarea>
                         </div>
 
+                        <!-- Right: Controls -->
                         <div class="w-28 shrink-0 flex flex-col gap-2">
                             <div class="flex justify-between items-center">
                                 <span class="text-[10px] font-bold text-gray-400 uppercase">Settings</span>
@@ -1094,7 +1165,7 @@
         }
 
         // Initial Load
-        draw(); renderLayers(); 
+        draw(); renderLayers();
     </script>
 </body>
 </html>

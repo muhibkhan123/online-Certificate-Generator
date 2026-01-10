@@ -95,7 +95,7 @@
     <!-- Main Content -->
     <main class="flex-1 flex overflow-hidden">
         
-        <!-- Controls Sidebar (Moved to Left) -->
+        <!-- Controls Sidebar (Left) -->
         <aside class="w-96 bg-white border-r border-gray-200 flex flex-col shrink-0 z-20 shadow-xl">
             
             <!-- Sidebar Tabs -->
@@ -170,7 +170,7 @@
                     <h3 class="text-sm font-bold text-gray-900 uppercase tracking-wide">Theme Colors</h3>
                     
                     <div>
-                        <label class="text-xs text-gray-500 mb-1.5 block">Border Color</label>
+                        <label class="text-xs text-gray-500 mb-1.5 block">Primary Color (Border)</label>
                         <div class="flex gap-2 items-center">
                             <input type="color" id="borderColor" value="#B48E43" oninput="updateDesign()" class="w-10 h-10 rounded cursor-pointer border-0 bg-transparent">
                             <input type="text" value="#B48E43" oninput="document.getElementById('borderColor').value=this.value; updateDesign();" class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-md text-gray-600 font-mono">
@@ -186,20 +186,6 @@
                     </div>
                 </div>
 
-                <div class="space-y-3 pt-4 border-t border-gray-200">
-                    <h3 class="text-sm font-bold text-gray-900 uppercase tracking-wide">Layout</h3>
-                    
-                    <div class="flex items-center gap-3">
-                        <input type="checkbox" id="showCornerOrnaments" checked onchange="updateDesign()" class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500 border-gray-300">
-                        <label for="showCornerOrnaments" class="text-sm text-gray-700">Corner Ornaments</label>
-                    </div>
-
-                    <div class="flex items-center gap-3">
-                        <input type="checkbox" id="showInnerBorder" checked onchange="updateDesign()" class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500 border-gray-300">
-                        <label for="showInnerBorder" class="text-sm text-gray-700">Inner Line Border</label>
-                    </div>
-                </div>
-                
                 <div class="pt-6 mt-auto">
                     <button onclick="resetDesign()" class="w-full py-2 text-sm text-gray-500 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
                         Reset to Default Design
@@ -213,20 +199,20 @@
         <div id="canvas-wrapper" class="flex-1 bg-gray-100 p-8 flex items-center justify-center overflow-auto relative group select-none">
             
             <!-- Left Design Button -->
-            <button onclick="changeDesign(-1)" class="absolute left-6 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-blue-600 hover:text-white p-3 rounded-full shadow-xl text-gray-600 transition-all opacity-0 group-hover:opacity-100 focus:opacity-100 z-10 transform hover:scale-110" title="Previous Design">
+            <button onclick="changeDesign(-1)" class="absolute left-6 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-blue-600 hover:text-white p-3 rounded-full shadow-xl text-gray-600 transition-all opacity-0 group-hover:opacity-100 focus:opacity-100 z-10 transform hover:scale-110 active:scale-95" title="Previous Design">
                 <i data-lucide="chevron-left" class="w-8 h-8"></i>
             </button>
 
             <canvas id="certificateCanvas" class="bg-white shadow-2xl rounded-sm cursor-crosshair"></canvas>
 
             <!-- Right Design Button -->
-            <button onclick="changeDesign(1)" class="absolute right-6 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-blue-600 hover:text-white p-3 rounded-full shadow-xl text-gray-600 transition-all opacity-0 group-hover:opacity-100 focus:opacity-100 z-10 transform hover:scale-110" title="Next Design">
+            <button onclick="changeDesign(1)" class="absolute right-6 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-blue-600 hover:text-white p-3 rounded-full shadow-xl text-gray-600 transition-all opacity-0 group-hover:opacity-100 focus:opacity-100 z-10 transform hover:scale-110 active:scale-95" title="Next Design">
                 <i data-lucide="chevron-right" class="w-8 h-8"></i>
             </button>
 
             <!-- Design Name Badge -->
             <div id="design-label" class="absolute bottom-6 left-1/2 -translate-x-1/2 bg-gray-900/80 backdrop-blur text-white px-5 py-2 rounded-full text-sm font-semibold shadow-lg opacity-0 group-hover:opacity-100 transition-all pointer-events-none translate-y-2 group-hover:translate-y-0">
-                Classic Gold
+                Imperial Gold
             </div>
         </div>
 
@@ -250,47 +236,42 @@
 
         let currentType = 'appreciation'; // Default
 
-        // Design Presets
+        // PROFESSIONAL DESIGN PRESETS
         const designPresets = [
             {
-                name: "Classic Gold",
-                borderColor: '#B48E43',
+                name: "Imperial Gold",
+                borderColor: '#B48E43', // Gold
+                secondaryColor: '#F3E5AB', // Pale Gold
                 bgColor: '#FFFCF5',
-                showCorners: true,
-                showInnerLine: true,
-                style: 'classic'
+                style: 'imperial'
             },
             {
-                name: "Modern Blue",
-                borderColor: '#1e40af',
-                bgColor: '#eff6ff',
-                showCorners: false,
-                showInnerLine: true,
-                style: 'modern'
-            },
-            {
-                name: "Elegant Black",
-                borderColor: '#1f2937',
+                name: "Corporate Blue",
+                borderColor: '#1e3a8a', // Dark Blue
+                secondaryColor: '#3b82f6', // Light Blue
                 bgColor: '#ffffff',
-                showCorners: true,
-                showInnerLine: false,
-                style: 'formal'
+                style: 'geometric'
             },
             {
-                name: "Corporate Green",
-                borderColor: '#059669',
-                bgColor: '#f0fdf4',
-                showCorners: false,
-                showInnerLine: true,
-                style: 'minimal'
+                name: "Academic Green",
+                borderColor: '#14532d', // Dark Green
+                secondaryColor: '#d97706', // Amber
+                bgColor: '#fdfbf7', // Parchment-ish
+                style: 'guilloche'
             },
             {
-                name: "Royal Red",
-                borderColor: '#991b1b',
+                name: "Modern Minimal",
+                borderColor: '#18181b', // Zinc 900
+                secondaryColor: '#e4e4e7', // Zinc 200
+                bgColor: '#ffffff',
+                style: 'minimalist'
+            },
+            {
+                name: "Grand Award",
+                borderColor: '#991b1b', // Red
+                secondaryColor: '#f59e0b', // Amber/Gold
                 bgColor: '#fef2f2',
-                showCorners: true,
-                showInnerLine: true,
-                style: 'ornate'
+                style: 'ribbon'
             }
         ];
 
@@ -472,8 +453,6 @@
             // Update UI Inputs
             document.getElementById('borderColor').value = designConfig.borderColor;
             document.getElementById('bgColor').value = designConfig.bgColor;
-            document.getElementById('showCornerOrnaments').checked = designConfig.showCorners;
-            document.getElementById('showInnerBorder').checked = designConfig.showInnerLine;
             
             // Update Label
             const label = document.getElementById('design-label');
@@ -493,9 +472,7 @@
             // 3. Draw Logo
             drawLogo();
 
-            // 4. Special Drawing for Marks Sheet (Logic removed as lines are now text fields)
-
-            // 5. Draw Text
+            // 4. Draw Text
             textFields.forEach(field => {
                 ctx.save();
                 const weight = field.fontWeight || '400';
@@ -538,8 +515,6 @@
 
                 // Render each line
                 lines.forEach((line, index) => {
-                    // Calculate offset to center the text block vertically around field.y
-                    // yOffset shifts lines up/down so field.y is the visual center
                     const yOffset = (index - (lines.length - 1) / 2) * lineHeight;
                     ctx.fillText(line, field.x, field.y + yOffset);
                 });
@@ -566,80 +541,139 @@
             const w = canvas.width;
             const h = canvas.height;
             const col = designConfig.borderColor;
-            const style = designConfig.style || 'classic';
+            const sec = designConfig.secondaryColor || col;
+            const style = designConfig.style || 'imperial';
 
             ctx.save();
-            ctx.strokeStyle = col;
-
-            if (style === 'modern') {
-                // Modern: Thick single border, no inner line usually
-                ctx.lineWidth = 20;
-                ctx.strokeRect(pad, pad, w - pad*2, h - pad*2);
-            } 
-            else if (style === 'minimal') {
-                // Minimal: Thin elegant border
-                ctx.lineWidth = 2;
-                ctx.strokeRect(pad, pad, w - pad*2, h - pad*2);
-                if (designConfig.showInnerLine) {
-                    ctx.lineWidth = 1;
-                    ctx.strokeStyle = col + '60';
-                    ctx.strokeRect(pad + 10, pad + 10, w - (pad*2 + 20), h - (pad*2 + 20));
-                }
-            } 
-            else if (style === 'formal') {
-                // Formal: Double border
-                ctx.lineWidth = 5;
-                ctx.strokeRect(pad, pad, w - pad*2, h - pad*2);
-                ctx.lineWidth = 1;
-                ctx.strokeRect(pad + 8, pad + 8, w - (pad*2 + 16), h - (pad*2 + 16));
-            }
-            else {
-                // Classic / Ornate / Default
-                ctx.lineWidth = 10;
-                ctx.strokeRect(pad, pad, w - pad*2, h - pad*2);
-
-                if (designConfig.showInnerLine) {
-                    ctx.lineWidth = 2;
-                    ctx.strokeRect(pad + 8, pad + 8, w - (pad*2 + 16), h - (pad*2 + 16));
-                    ctx.lineWidth = 1;
-                    ctx.strokeStyle = col + '80';
-                    ctx.strokeRect(pad + 20, pad + 20, w - (pad*2 + 40), h - (pad*2 + 40));
-                }
-            }
-
-            if (designConfig.showCorners) {
-                const cornerSize = 80;
+            
+            if (style === 'imperial') {
+                // Classic diploma style
                 ctx.strokeStyle = col;
                 ctx.lineWidth = 3;
+                ctx.strokeRect(pad, pad, w - pad*2, h - pad*2);
                 
-                // Only draw fancy corners for classic/ornate styles
-                if (style === 'classic' || style === 'ornate' || style === 'formal') {
-                    drawCorner(pad + 25, pad + 25, cornerSize, 0);
-                    drawCorner(w - pad - 25, pad + 25, cornerSize, Math.PI * 0.5);
-                    drawCorner(w - pad - 25, h - pad - 25, cornerSize, Math.PI);
-                    drawCorner(pad + 25, h - pad - 25, cornerSize, Math.PI * 1.5);
-                }
+                ctx.strokeStyle = sec;
+                ctx.lineWidth = 1;
+                ctx.strokeRect(pad + 6, pad + 6, w - (pad*2 + 12), h - (pad*2 + 12));
+                
+                ctx.strokeStyle = col;
+                ctx.lineWidth = 8;
+                ctx.strokeRect(pad + 12, pad + 12, w - (pad*2 + 24), h - (pad*2 + 24));
+
+                // Corner Ornaments
+                const cornerSize = 100;
+                drawOrnateCorner(pad + 12, pad + 12, cornerSize, 0, col); // TL
+                drawOrnateCorner(w - pad - 12, pad + 12, cornerSize, Math.PI * 0.5, col); // TR
+                drawOrnateCorner(w - pad - 12, h - pad - 12, cornerSize, Math.PI, col); // BR
+                drawOrnateCorner(pad + 12, h - pad - 12, cornerSize, Math.PI * 1.5, col); // BL
+            } 
+            else if (style === 'geometric') {
+                // Modern Geometric
+                const grad = ctx.createLinearGradient(0, 0, w, h);
+                grad.addColorStop(0, col);
+                grad.addColorStop(1, sec);
+                
+                ctx.fillStyle = grad;
+                
+                // Top Left Polygon
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(300, 0);
+                ctx.lineTo(0, 300);
+                ctx.fill();
+                
+                // Bottom Right Polygon
+                ctx.beginPath();
+                ctx.moveTo(w, h);
+                ctx.lineTo(w - 300, h);
+                ctx.lineTo(w, h - 300);
+                ctx.fill();
+                
+                // Thin inner frame
+                ctx.strokeStyle = col;
+                ctx.lineWidth = 2;
+                ctx.strokeRect(pad, pad, w - pad*2, h - pad*2);
+            } 
+            else if (style === 'guilloche') {
+                // Academic Wave Pattern simulation
+                ctx.strokeStyle = col;
+                ctx.lineWidth = 2;
+                ctx.strokeRect(pad, pad, w - pad*2, h - pad*2);
+                
+                ctx.strokeStyle = sec;
+                ctx.lineWidth = 1;
+                drawWaveBorder(pad + 10, pad + 10, w - (pad*2 + 20), h - (pad*2 + 20));
+                drawWaveBorder(pad + 15, pad + 15, w - (pad*2 + 30), h - (pad*2 + 30));
             }
+            else if (style === 'minimalist') {
+                // High contrast sleek
+                ctx.fillStyle = col;
+                ctx.fillRect(0, 0, 20, h); // Left Bar
+                ctx.fillRect(w - 20, 0, 20, h); // Right Bar
+                
+                ctx.strokeStyle = sec;
+                ctx.lineWidth = 1;
+                ctx.strokeRect(40, 40, w - 80, h - 80);
+            }
+            else if (style === 'ribbon') {
+                // Award Style
+                // Header Bar
+                ctx.fillStyle = col;
+                ctx.fillRect(pad, pad, w - pad*2, 80);
+                
+                // Footer Bar
+                ctx.fillRect(pad, h - pad - 40, w - pad*2, 40);
+                
+                // Gold trim
+                ctx.strokeStyle = sec;
+                ctx.lineWidth = 4;
+                ctx.strokeRect(pad, pad, w - pad*2, h - pad*2);
+                
+                // Center accent
+                ctx.beginPath();
+                ctx.arc(w/2, pad + 80, 20, 0, Math.PI, false);
+                ctx.fillStyle = col;
+                ctx.fill();
+            }
+
             ctx.restore();
         }
 
-        function drawCorner(x, y, size, rotation) {
+        function drawOrnateCorner(x, y, size, rotation, color) {
             ctx.save();
             ctx.translate(x, y);
             ctx.rotate(rotation);
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
             ctx.beginPath();
+            // Complex flourish simulation
             ctx.moveTo(0, size);
             ctx.quadraticCurveTo(0, 0, size, 0);
             ctx.moveTo(0, size - 10);
-            ctx.quadraticCurveTo(5, 5, size - 10, 0);
+            ctx.quadraticCurveTo(10, 10, size - 10, 0);
+            ctx.moveTo(0, size - 20);
+            ctx.bezierCurveTo(20, size-20, 20, 20, size - 20, 0);
             ctx.stroke();
-            
-            // Simple dot for classic
+            ctx.restore();
+        }
+
+        function drawWaveBorder(x, y, w, h) {
+            ctx.save();
+            ctx.translate(x, y);
+            const step = 10;
+            const amp = 3;
             ctx.beginPath();
-            ctx.arc(10, 10, 3, 0, Math.PI * 2);
-            ctx.fillStyle = ctx.strokeStyle;
-            ctx.fill();
             
+            // Top
+            for(let i=0; i<=w; i+=step) ctx.lineTo(i, Math.sin(i/5)*amp);
+            // Right
+            for(let i=0; i<=h; i+=step) ctx.lineTo(w + Math.sin(i/5)*amp, i);
+            // Bottom
+            for(let i=w; i>=0; i-=step) ctx.lineTo(i, h + Math.sin(i/5)*amp);
+            // Left
+            for(let i=h; i>=0; i-=step) ctx.lineTo(Math.sin(i/5)*amp, i);
+            
+            ctx.stroke();
             ctx.restore();
         }
 
@@ -660,7 +694,6 @@
                 const weight = field.fontWeight || '400';
                 ctx.font = `${weight} ${field.fontSize}px "${field.fontFamily}"`;
                 
-                // Hit test for multi-line
                 const lines = field.text.toString().split('\n');
                 let maxWidth = 0;
                 lines.forEach(line => {
@@ -670,7 +703,6 @@
                 const h = lines.length * (field.fontSize * 1.3);
                 const w = maxWidth;
 
-                // Simple check around center point
                 if (pos.x >= field.x - w/2 - 20 && pos.x <= field.x + w/2 + 20 &&
                     pos.y >= field.y - h/2 - 20 && pos.y <= field.y + h/2 + 20) {
                     selectedFieldId = field.id;
@@ -720,13 +752,11 @@
                 const div = document.createElement('div');
                 div.className = `p-3 rounded-lg border transition-all ${isSelected ? 'bg-white border-blue-500 shadow ring-1 ring-blue-500' : 'bg-white border-gray-200 hover:border-gray-300'}`;
                 
-                // Count lines for textarea height
                 const lineCount = field.text.toString().split('\n').length;
                 const rowCount = lineCount > 1 ? lineCount : 1;
 
                 div.innerHTML = `
                     <div class="flex gap-3" onclick="selectField(${field.id})">
-                        <!-- Left: Input Area -->
                         <div class="flex-1 min-w-0 flex flex-col">
                             <textarea 
                                 oninput="updateField(${field.id}, 'text', this.value)"
@@ -737,7 +767,6 @@
                                 placeholder="Enter text...">${field.text}</textarea>
                         </div>
 
-                        <!-- Right: Controls -->
                         <div class="w-28 shrink-0 flex flex-col gap-2">
                             <div class="flex justify-between items-center">
                                 <span class="text-[10px] font-bold text-gray-400 uppercase">Settings</span>
@@ -830,16 +859,16 @@
         function updateDesign() {
             designConfig.borderColor = document.getElementById('borderColor').value;
             designConfig.bgColor = document.getElementById('bgColor').value;
-            designConfig.showCorners = document.getElementById('showCornerOrnaments').checked;
-            designConfig.showInnerLine = document.getElementById('showInnerBorder').checked;
             draw();
         }
         function resetDesign() {
-            document.getElementById('borderColor').value = '#B48E43';
-            document.getElementById('bgColor').value = '#FFFCF5';
-            document.getElementById('showCornerOrnaments').checked = true;
-            document.getElementById('showInnerBorder').checked = true;
-            updateDesign();
+            // Restore default colors based on current style
+            const defaultStyle = designPresets[currentDesignIndex];
+            designConfig = { ...defaultStyle };
+            
+            document.getElementById('borderColor').value = designConfig.borderColor;
+            document.getElementById('bgColor').value = designConfig.bgColor;
+            draw();
         }
         function handleLogoUpload(event) {
             const file = event.target.files[0];

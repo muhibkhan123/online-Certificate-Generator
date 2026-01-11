@@ -72,13 +72,34 @@
     </header>
 
     <!-- Certificate Type Navigation Tabs -->
-    <nav class="bg-gray-50 border-b border-gray-200 px-6 py-3 overflow-x-auto whitespace-nowrap scrollbar-hide shadow-inner">
-        <div class="flex gap-3 justify-center min-w-max">
-            <button onclick="loadTemplate('quran')" id="tab-quran" class="tab-btn inactive px-4 py-2 rounded-full text-sm font-semibold border transition-all flex items-center gap-2">
-                <i data-lucide="book-open" class="w-4 h-4"></i> Quran Certificate
-            </button>
+    <nav class="bg-gray-50 border-b border-gray-200 px-6 py-3 relative z-50 shadow-inner">
+        <div class="flex flex-wrap gap-3 justify-center items-start">
+            
+            <!-- Quran Dropdown -->
+            <div class="relative inline-block text-left" onmouseenter="document.getElementById('quran-dropdown').classList.remove('hidden')" onmouseleave="document.getElementById('quran-dropdown').classList.add('hidden')">
+                <button id="tab-quran" class="tab-btn inactive px-4 py-2 rounded-full text-sm font-semibold border transition-all flex items-center gap-2">
+                    <i data-lucide="book-open" class="w-4 h-4"></i> Quran Certificate <i data-lucide="chevron-down" class="w-3 h-3 ml-1"></i>
+                </button>
+                <div id="quran-dropdown" class="hidden absolute left-0 mt-0 w-56 rounded-md shadow-xl bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
+                    <div class="py-1">
+                        <button onclick="loadTemplate('quran'); document.getElementById('quran-dropdown').classList.add('hidden')" class="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 border-b border-gray-100 flex items-center gap-2">
+                            <i data-lucide="check-circle" class="w-3 h-3 text-green-500"></i> Full Complete Quran
+                        </button>
+                        <button onclick="loadTemplate('quran_half'); document.getElementById('quran-dropdown').classList.add('hidden')" class="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 flex items-center gap-2">
+                            <i data-lucide="circle-dashed" class="w-3 h-3 text-blue-500"></i> Half 15 Juz Quran
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <button onclick="loadTemplate('qaida')" id="tab-qaida" class="tab-btn inactive px-4 py-2 rounded-full text-sm font-semibold border transition-all flex items-center gap-2">
                 <i data-lucide="book" class="w-4 h-4"></i> Noorani Qaida
+            </button>
+            <button onclick="loadTemplate('tajweed')" id="tab-tajweed" class="tab-btn inactive px-4 py-2 rounded-full text-sm font-semibold border transition-all flex items-center gap-2">
+                <i data-lucide="book-open-check" class="w-4 h-4"></i> Tajweed
+            </button>
+            <button onclick="loadTemplate('arabic')" id="tab-arabic" class="tab-btn inactive px-4 py-2 rounded-full text-sm font-semibold border transition-all flex items-center gap-2">
+                <i data-lucide="languages" class="w-4 h-4"></i> Arabic Language
             </button>
             <button onclick="loadTemplate('appreciation')" id="tab-appreciation" class="tab-btn active px-4 py-2 rounded-full text-sm font-semibold border transition-all flex items-center gap-2">
                 <i data-lucide="star" class="w-4 h-4"></i> Appreciation
@@ -259,7 +280,7 @@
 
         let currentType = 'appreciation'; // Default
 
-        // 15 PROFESSIONAL DESIGN PRESETS
+        // 16 PROFESSIONAL DESIGN PRESETS
         const designPresets = [
             // Original 5
             { name: "Imperial Gold", borderColor: '#B48E43', secondaryColor: '#F3E5AB', bgColor: '#FFFCF5', style: 'imperial' },
@@ -277,8 +298,78 @@
             { name: "Art Deco Gold", borderColor: '#000000', secondaryColor: '#d4af37', bgColor: '#ffffff', style: 'artdeco' },
             { name: "Clean Silver", borderColor: '#475569', secondaryColor: '#94a3b8', bgColor: '#f8fafc', style: 'minimalist' },
             { name: "Geometric Pop", borderColor: '#ea580c', secondaryColor: '#2563eb', bgColor: '#fff7ed', style: 'geometric' },
-            { name: "Azure Horizon", borderColor: '#0369a1', secondaryColor: '#bae6fd', bgColor: '#f0f9ff', style: 'modern' }
+            { name: "Azure Horizon", borderColor: '#0369a1', secondaryColor: '#bae6fd', bgColor: '#f0f9ff', style: 'modern' },
+            // NEW DESIGN 16 (SVG Derived)
+            { name: "Luxury Gold", borderColor: '#D4AF37', secondaryColor: '#C5A059', bgColor: '#ffffff', style: 'luxury_gold' }
         ];
+
+        // --- LUXURY GOLD SVG (Static Graphic, no text) ---
+        // Cleaned up SVG string without editable text to serve as background
+        const luxuryGoldSvgString = `
+<svg width="1123" height="794" viewBox="0 0 1123 794" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <linearGradient id="goldLuxury" x1="0%" y1="0%" x2="100%" y2="100%" spreadMethod="reflect">
+      <stop offset="0%" stop-color="#AE8625" />
+      <stop offset="20%" stop-color="#F7EF8A" />
+      <stop offset="40%" stop-color="#D2AC47" />
+      <stop offset="60%" stop-color="#EDC967" />
+      <stop offset="80%" stop-color="#D2AC47" />
+      <stop offset="100%" stop-color="#AE8625" />
+    </linearGradient>
+    <pattern id="braidPattern" x="0" y="0" width="30" height="30" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="30" height="30" fill="none"/>
+      <path d="M0,15 Q7.5,0 15,15 T30,15" fill="none" stroke="url(#goldLuxury)" stroke-width="2"/>
+      <path d="M15,0 Q22.5,15 15,30" fill="none" stroke="url(#goldLuxury)" stroke-width="2"/>
+      <circle cx="15" cy="15" r="3" fill="#AE8625" />
+    </pattern>
+    <pattern id="damaskBg" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
+       <path d="M30,10 C40,10 40,20 30,30 C20,20 20,10 30,10" fill="none" stroke="#e0e0e0" stroke-width="1" opacity="0.4"/>
+       <path d="M0,40 C10,40 10,50 0,60 C-10,50 -10,40 0,40" fill="none" stroke="#e0e0e0" stroke-width="1" opacity="0.4"/>
+       <path d="M60,40 C70,40 70,50 60,60 C50,50 50,40 60,40" fill="none" stroke="#e0e0e0" stroke-width="1" opacity="0.4"/>
+    </pattern>
+    <path id="cornerMaster" d="M0,0 L40,0 L40,5 C40,5 60,5 70,20 C80,35 75,50 85,60 C95,70 110,70 120,80 L125,85 L125,120 L120,120 C110,120 100,110 85,110 C70,110 60,120 50,115 C40,110 35,90 20,85 C5,80 5,60 0,60 L0,0 Z M10,10 L30,10 L30,40 C30,50 40,60 50,65 C60,70 70,60 80,60 C90,60 100,70 105,80 L110,80 L110,105 C100,100 90,95 80,95 C60,95 50,85 40,80 C30,75 20,55 10,50 L10,10 Z" fill="url(#goldLuxury)" stroke="#7e5d16" stroke-width="0.5"/>
+    <g id="divider">
+      <path d="M-150,0 Q-75,10 0,0 Q75,-10 150,0" fill="none" stroke="url(#goldLuxury)" stroke-width="1.5"/>
+      <circle cx="0" cy="0" r="3" fill="#AE8625"/>
+      <path d="M-10,0 L0,10 L10,0 L0,-10 Z" fill="#AE8625"/>
+    </g>
+  </defs>
+  <rect width="100%" height="100%" fill="#FFFEFA" />
+  <rect width="100%" height="100%" fill="url(#damaskBg)" />
+  <rect x="20" y="20" width="1083" height="754" fill="none" stroke="#1F1F1F" stroke-width="6" />
+  <rect x="35" y="35" width="1053" height="724" fill="none" stroke="url(#braidPattern)" stroke-width="15" />
+  <rect x="50" y="50" width="1023" height="694" fill="none" stroke="#1F1F1F" stroke-width="1" />
+  <g transform="translate(20, 20)"><use xlink:href="#cornerMaster" transform="scale(1.5)"/><path d="M0,0 L120,120" stroke="url(#goldLuxury)" stroke-width="1" opacity="0.5"/></g>
+  <g transform="translate(1103, 20) scale(-1, 1)"><use xlink:href="#cornerMaster" transform="scale(1.5)"/></g>
+  <g transform="translate(1103, 774) scale(-1, -1)"><use xlink:href="#cornerMaster" transform="scale(1.5)"/></g>
+  <g transform="translate(20, 774) scale(1, -1)"><use xlink:href="#cornerMaster" transform="scale(1.5)"/></g>
+  <g text-anchor="middle">
+    <use xlink:href="#divider" x="561.5" y="230"/>
+    <path d="M361,400 C461,410 661,410 761,400" fill="none" stroke="url(#goldLuxury)" stroke-width="2" stroke-linecap="round"/>
+    <use xlink:href="#divider" x="561.5" y="530"/>
+  </g>
+  <g transform="translate(561.5, 660)">
+    <path d="M-25,30 L-40,80 L-15,65 L10,80 L0,30" fill="#8B6914" stroke="#4e3b12" stroke-width="1"/>
+    <path d="M25,30 L40,80 L15,65 L-10,80 L0,30" fill="#AE8625" stroke="#4e3b12" stroke-width="1"/>
+    <circle cx="0" cy="0" r="50" fill="url(#goldLuxury)" stroke="#4e3b12" stroke-width="1"/>
+    <circle cx="0" cy="0" r="44" fill="none" stroke="#F7EF8A" stroke-width="2" opacity="0.8"/>
+    <circle cx="0" cy="0" r="40" fill="none" stroke="#4e3b12" stroke-width="1" stroke-dasharray="1,2"/>
+    <text y="-10" font-family="'Times New Roman', serif" font-size="10" font-weight="bold" fill="#332200" text-anchor="middle">OFFICIAL</text>
+    <path d="M-15,0 L15,0 L0,20 Z" fill="#332200" />
+    <text y="28" font-family="'Arial', sans-serif" font-size="8" font-weight="bold" fill="#332200" text-anchor="middle" letter-spacing="1">AWARD</text>
+    <ellipse cx="-20" cy="-20" rx="10" ry="5" fill="#fff" opacity="0.3" transform="rotate(-45 -20 -20)"/>
+  </g>
+</svg>`;
+
+        // Preload the SVG Image
+        const luxuryGoldImg = new Image();
+        luxuryGoldImg.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(luxuryGoldSvgString);
+        luxuryGoldImg.onload = function() {
+            // Re-draw if current selected style is luxury_gold
+            if (designConfig.style === 'luxury_gold') {
+                draw();
+            }
+        };
 
         let currentDesignIndex = 0;
         let designConfig = { ...designPresets[0] };
@@ -309,6 +400,7 @@
             quran: {
                 title: "Quran Certificate",
                 fields: [
+                    { id: 0, text: "MADRASSA NAME HERE", x: 600, y: 100, fontSize: 36, fontFamily: "Cinzel", fontWeight: "700", color: "#1f2937", spacing: 2 },
                     { id: 1, text: "CERTIFICATE", x: 600, y: 170, fontSize: 60, fontFamily: "Cinzel", fontWeight: "700", color: "#1f2937", spacing: 5 },
                     { id: 2, text: "OF COMPLETION OF HOLY QURAN", x: 600, y: 230, fontSize: 22, fontFamily: "Montserrat", fontWeight: "400", color: "#B48E43", spacing: 2 },
                     { id: 3, text: "This is to certify that", x: 600, y: 310, fontSize: 16, fontFamily: "Lato", fontWeight: "400", color: "#6b7280", spacing: 1 },
@@ -322,9 +414,27 @@
                     { id: 10, text: "DATE", x: 900, y: 680, fontSize: 12, fontFamily: "Montserrat", fontWeight: "700", color: "#4b5563", spacing: 1 },
                 ]
             },
+            quran_half: {
+                title: "Half Quran Certificate",
+                fields: [
+                    { id: 0, text: "MADRASSA NAME HERE", x: 600, y: 100, fontSize: 36, fontFamily: "Cinzel", fontWeight: "700", color: "#1f2937", spacing: 2 },
+                    { id: 1, text: "CERTIFICATE", x: 600, y: 170, fontSize: 60, fontFamily: "Cinzel", fontWeight: "700", color: "#1f2937", spacing: 5 },
+                    { id: 2, text: "OF COMPLETION OF 15 JUZ", x: 600, y: 230, fontSize: 22, fontFamily: "Montserrat", fontWeight: "400", color: "#B48E43", spacing: 2 },
+                    { id: 3, text: "This is to certify that", x: 600, y: 310, fontSize: 16, fontFamily: "Lato", fontWeight: "400", color: "#6b7280", spacing: 1 },
+                    { id: 4, text: "Hafiz Abdullah", x: 600, y: 390, fontSize: 80, fontFamily: "Great Vibes", fontWeight: "400", color: "#1e40af", spacing: 0 },
+                    { id: 5, text: "Has successfully completed the memorization of 15 Juz\nof the Holy Quran with Tajweed rules.", x: 600, y: 480, fontSize: 18, fontFamily: "Open Sans", fontWeight: "400", color: "#4b5563", spacing: 0 },
+                    { id: 11, text: "______________________", x: 300, y: 640, fontSize: 20, fontFamily: "Arial", fontWeight: "400", color: "#9ca3af", spacing: 0 },
+                    { id: 12, text: "______________________", x: 900, y: 640, fontSize: 20, fontFamily: "Arial", fontWeight: "400", color: "#9ca3af", spacing: 0 },
+                    { id: 7, text: "Principal", x: 300, y: 650, fontSize: 24, fontFamily: "Alex Brush", fontWeight: "400", color: "#000000", spacing: 0 },
+                    { id: 8, text: "SIGNATURE", x: 300, y: 680, fontSize: 12, fontFamily: "Montserrat", fontWeight: "700", color: "#4b5563", spacing: 1 },
+                    { id: 9, text: "2026-05-20", x: 900, y: 650, fontSize: 18, fontFamily: "Lato", fontWeight: "400", color: "#000000", spacing: 0 },
+                    { id: 10, text: "DATE", x: 900, y: 680, fontSize: 12, fontFamily: "Montserrat", fontWeight: "700", color: "#4b5563", spacing: 1 },
+                ]
+            },
             qaida: {
                 title: "Noorani Qaida Certificate",
                 fields: [
+                    { id: 0, text: "MADRASSA NAME HERE", x: 600, y: 100, fontSize: 36, fontFamily: "Cinzel", fontWeight: "700", color: "#1f2937", spacing: 2 },
                     { id: 1, text: "CERTIFICATE", x: 600, y: 170, fontSize: 60, fontFamily: "Cinzel", fontWeight: "700", color: "#1f2937", spacing: 5 },
                     { id: 2, text: "OF NOORANI QAIDA COMPLETION", x: 600, y: 230, fontSize: 20, fontFamily: "Montserrat", fontWeight: "400", color: "#B48E43", spacing: 2 },
                     { id: 3, text: "Proudly Presented To", x: 600, y: 310, fontSize: 16, fontFamily: "Lato", fontWeight: "400", color: "#6b7280", spacing: 1 },
@@ -338,9 +448,44 @@
                     { id: 10, text: "DATE", x: 900, y: 680, fontSize: 12, fontFamily: "Montserrat", fontWeight: "700", color: "#4b5563", spacing: 1 },
                 ]
             },
+            tajweed: {
+                title: "Tajweed Certificate",
+                fields: [
+                    { id: 0, text: "MADRASSA NAME HERE", x: 600, y: 100, fontSize: 36, fontFamily: "Cinzel", fontWeight: "700", color: "#1f2937", spacing: 2 },
+                    { id: 1, text: "CERTIFICATE", x: 600, y: 170, fontSize: 60, fontFamily: "Cinzel", fontWeight: "700", color: "#1f2937", spacing: 5 },
+                    { id: 2, text: "OF TAJWEED PROFICIENCY", x: 600, y: 230, fontSize: 22, fontFamily: "Montserrat", fontWeight: "400", color: "#B48E43", spacing: 2 },
+                    { id: 3, text: "This is to certify that", x: 600, y: 310, fontSize: 16, fontFamily: "Lato", fontWeight: "400", color: "#6b7280", spacing: 1 },
+                    { id: 4, text: "Student Name", x: 600, y: 390, fontSize: 80, fontFamily: "Great Vibes", fontWeight: "400", color: "#1e40af", spacing: 0 },
+                    { id: 5, text: "Has successfully completed the course in Tajweed rules\nand demonstrated proficiency in Quranic recitation.", x: 600, y: 480, fontSize: 18, fontFamily: "Open Sans", fontWeight: "400", color: "#4b5563", spacing: 0 },
+                    { id: 11, text: "______________________", x: 300, y: 640, fontSize: 20, fontFamily: "Arial", fontWeight: "400", color: "#9ca3af", spacing: 0 },
+                    { id: 12, text: "______________________", x: 900, y: 640, fontSize: 20, fontFamily: "Arial", fontWeight: "400", color: "#9ca3af", spacing: 0 },
+                    { id: 7, text: "Instructor", x: 300, y: 650, fontSize: 24, fontFamily: "Alex Brush", fontWeight: "400", color: "#000000", spacing: 0 },
+                    { id: 8, text: "SIGNATURE", x: 300, y: 680, fontSize: 12, fontFamily: "Montserrat", fontWeight: "700", color: "#4b5563", spacing: 1 },
+                    { id: 9, text: "2026-05-20", x: 900, y: 650, fontSize: 18, fontFamily: "Lato", fontWeight: "400", color: "#000000", spacing: 0 },
+                    { id: 10, text: "DATE", x: 900, y: 680, fontSize: 12, fontFamily: "Montserrat", fontWeight: "700", color: "#4b5563", spacing: 1 },
+                ]
+            },
+            arabic: {
+                title: "Arabic Language Certificate",
+                fields: [
+                    { id: 0, text: "MADRASSA NAME HERE", x: 600, y: 100, fontSize: 36, fontFamily: "Cinzel", fontWeight: "700", color: "#1f2937", spacing: 2 },
+                    { id: 1, text: "CERTIFICATE", x: 600, y: 170, fontSize: 60, fontFamily: "Cinzel", fontWeight: "700", color: "#1f2937", spacing: 5 },
+                    { id: 2, text: "OF ARABIC LANGUAGE", x: 600, y: 230, fontSize: 22, fontFamily: "Montserrat", fontWeight: "400", color: "#B48E43", spacing: 2 },
+                    { id: 3, text: "Proudly Presented To", x: 600, y: 310, fontSize: 16, fontFamily: "Lato", fontWeight: "400", color: "#6b7280", spacing: 1 },
+                    { id: 4, text: "Student Name", x: 600, y: 390, fontSize: 80, fontFamily: "Great Vibes", fontWeight: "400", color: "#059669", spacing: 0 },
+                    { id: 5, text: "For successfully completing the Arabic Language Course\ncovering Grammar, Morphology, and Comprehension.", x: 600, y: 480, fontSize: 18, fontFamily: "Open Sans", fontWeight: "400", color: "#4b5563", spacing: 0 },
+                    { id: 11, text: "______________________", x: 300, y: 640, fontSize: 20, fontFamily: "Arial", fontWeight: "400", color: "#9ca3af", spacing: 0 },
+                    { id: 12, text: "______________________", x: 900, y: 640, fontSize: 20, fontFamily: "Arial", fontWeight: "400", color: "#9ca3af", spacing: 0 },
+                    { id: 7, text: "Instructor", x: 300, y: 650, fontSize: 24, fontFamily: "Alex Brush", fontWeight: "400", color: "#000000", spacing: 0 },
+                    { id: 8, text: "SIGNATURE", x: 300, y: 680, fontSize: 12, fontFamily: "Montserrat", fontWeight: "700", color: "#4b5563", spacing: 1 },
+                    { id: 9, text: "2026-05-20", x: 900, y: 650, fontSize: 18, fontFamily: "Lato", fontWeight: "400", color: "#000000", spacing: 0 },
+                    { id: 10, text: "DATE", x: 900, y: 680, fontSize: 12, fontFamily: "Montserrat", fontWeight: "700", color: "#4b5563", spacing: 1 },
+                ]
+            },
             appreciation: {
                 title: "Appreciation Certificate",
                 fields: [
+                    { id: 0, text: "MADRASSA NAME HERE", x: 600, y: 100, fontSize: 36, fontFamily: "Cinzel", fontWeight: "700", color: "#1f2937", spacing: 2 },
                     { id: 1, text: "CERTIFICATE", x: 600, y: 170, fontSize: 70, fontFamily: "Cinzel", fontWeight: "700", color: "#1f2937", spacing: 5 },
                     { id: 2, text: "OF APPRECIATION", x: 600, y: 230, fontSize: 24, fontFamily: "Montserrat", fontWeight: "400", color: "#B48E43", spacing: 3 },
                     { id: 3, text: "PROUDLY PRESENTED TO", x: 600, y: 310, fontSize: 14, fontFamily: "Lato", fontWeight: "700", color: "#6b7280", spacing: 1 },
@@ -357,6 +502,7 @@
             leaving: {
                 title: "Madrassa Leaving Certificate",
                 fields: [
+                    { id: 0, text: "MADRASSA NAME HERE", x: 600, y: 100, fontSize: 36, fontFamily: "Cinzel", fontWeight: "700", color: "#1f2937", spacing: 2 },
                     { id: 1, text: "MADRASSA LEAVING", x: 600, y: 160, fontSize: 50, fontFamily: "Cinzel", fontWeight: "700", color: "#1f2937", spacing: 3 },
                     { id: 2, text: "CERTIFICATE", x: 600, y: 220, fontSize: 30, fontFamily: "Cinzel", fontWeight: "700", color: "#1f2937", spacing: 5 },
                     { id: 3, text: "This is to certify that", x: 600, y: 300, fontSize: 16, fontFamily: "Lato", fontWeight: "400", color: "#6b7280", spacing: 1 },
@@ -373,6 +519,7 @@
             marks: {
                 title: "Exam Marks Sheet",
                 fields: [
+                    { id: 0, text: "MADRASSA NAME HERE", x: 600, y: 80, fontSize: 36, fontFamily: "Cinzel", fontWeight: "700", color: "#1f2937", spacing: 2 },
                     { id: 1, text: "RESULT CARD", x: 600, y: 140, fontSize: 50, fontFamily: "Cinzel", fontWeight: "700", color: "#1f2937", spacing: 3 },
                     { id: 2, text: "ANNUAL EXAMINATION 2026", x: 600, y: 190, fontSize: 18, fontFamily: "Montserrat", fontWeight: "700", color: "#B48E43", spacing: 2 },
                     
@@ -410,6 +557,21 @@
 
         // --- Core Functions ---
 
+        function toggleDropdown(id, event) {
+            if(event) event.stopPropagation();
+            const el = document.getElementById(id);
+            document.querySelectorAll('[id$="-dropdown"]').forEach(d => {
+                 if(d.id !== id) d.classList.add('hidden');
+            });
+            el.classList.toggle('hidden');
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.closest('.relative.inline-block')) {
+                document.querySelectorAll('[id$="-dropdown"]').forEach(d => d.classList.add('hidden'));
+            }
+        }
+
         function loadTemplate(type) {
             currentType = type;
             
@@ -421,7 +583,12 @@
                 btn.classList.remove('active');
                 btn.classList.add('inactive');
             });
-            const activeBtn = document.getElementById('tab-' + type);
+
+            // If it's the sub-option, highlight parent tab
+            let tabId = 'tab-' + type;
+            if (type === 'quran_half') tabId = 'tab-quran';
+
+            const activeBtn = document.getElementById(tabId);
             if(activeBtn) {
                 activeBtn.classList.remove('inactive');
                 activeBtn.classList.add('active');
@@ -462,7 +629,7 @@
             
             // Fixed Table Area - Center on Canvas
             const tableWidth = 900; 
-            const tableLeft = (CANVAS_WIDTH - tableWidth) / 2; // (1200 - 900) / 2 = 150
+            const tableLeft = (CANVAS_WIDTH - tableWidth) / 2; 
             
             // Calculate width per column
             const colWidth = tableWidth / Math.max(1, numCols);
@@ -495,28 +662,28 @@
             // Base Y for summary (below table + padding)
             const baseY = maxY + 65;
 
-            // Update Total Marks Label (ID 17) - Align Left (first col approximate)
+            // Update Total Marks Label (ID 17)
             const f17 = textFields.find(f => f.id === 17);
             if (f17) {
                 f17.y = baseY;
                 f17.x = tableLeft + 100; // Indent slightly
             }
 
-            // Update Score (ID 18) - Align Right (last col approximate)
+            // Update Score (ID 18)
             const f18 = textFields.find(f => f.id === 18);
             if (f18) {
                 f18.y = baseY;
                 f18.x = tableRight - 100; // Indent slightly
             }
 
-            // Update Grade (ID 19) - Center
+            // Update Grade (ID 19)
             const f19 = textFields.find(f => f.id === 19);
             if (f19) {
                 f19.y = baseY + 60; 
                 f19.x = CANVAS_WIDTH / 2;
             }
 
-            // Update Controller (ID 20) - Right aligned
+            // Update Controller (ID 20)
             const f20 = textFields.find(f => f.id === 20);
             if (f20) {
                 f20.y = baseY + 140;
@@ -535,14 +702,17 @@
             const lastRowY = Math.max(...cells.filter(c => c.tableRow === maxRow).map(c => c.y));
             const rowHeight = 50; // Standard spacing
 
-            // Create new row cells - Initial X doesn't matter, recalculateTableLayout fixes it
+            // Create new row cells
             for (let c = 0; c <= maxCol; c++) {
+                const colSource = cells.find(cell => cell.tableCol === c);
+                const xPos = colSource ? colSource.x : 200 + (c * 200);
+                
                 const newId = Date.now() + Math.floor(Math.random() * 1000) + c;
-                const newCell = createCell(newId, "New Item", maxRow + 1, c, 0, lastRowY + rowHeight);
+                const newCell = createCell(newId, "New Item", maxRow + 1, c, xPos, lastRowY + rowHeight);
                 textFields.push(newCell);
             }
             
-            recalculateTableLayout(); // Fixes X positions
+            recalculateTableLayout(); 
             draw();
             renderLayers();
         }
@@ -556,7 +726,7 @@
 
             textFields = textFields.filter(f => !f.isTableCell || f.tableRow !== maxRow);
             
-            recalculateTableLayout(); // Ensure summary moves up
+            recalculateTableLayout(); 
             draw();
             renderLayers();
         }
@@ -568,6 +738,10 @@
             const maxCol = Math.max(...cells.map(c => c.tableCol));
             const maxRow = Math.max(...cells.map(c => c.tableRow));
             
+            // Get X position of last col
+            const lastColX = Math.max(...cells.filter(c => c.tableCol === maxCol).map(c => c.x));
+            const colWidth = 200; 
+
             // Add cell to every existing row
             for (let r = 0; r <= maxRow; r++) {
                 const rowSource = cells.find(cell => cell.tableRow === r);
@@ -575,11 +749,11 @@
                 
                 const newId = Date.now() + Math.floor(Math.random() * 1000) + r;
                 // createCell(id, text, row, col, x, y, font...)
-                const newCell = createCell(newId, "Col " + (maxCol + 2), r, maxCol + 1, 0, yPos);
+                const newCell = createCell(newId, "Col " + (maxCol + 2), r, maxCol + 1, lastColX + colWidth, yPos);
                 textFields.push(newCell);
             }
             
-            recalculateTableLayout(); // Resizes all columns to fit width
+            recalculateTableLayout(); 
             draw();
             renderLayers();
         }
@@ -593,7 +767,7 @@
 
             textFields = textFields.filter(f => !f.isTableCell || f.tableCol !== maxCol);
             
-            recalculateTableLayout(); // Resizes remaining columns
+            recalculateTableLayout(); 
             draw();
             renderLayers();
         }
@@ -948,6 +1122,12 @@
                 ctx.lineWidth = 4;
                 ctx.strokeRect(pad+20, pad+20, w - (pad*2+40), h - (pad*2+40));
             }
+            else if (style === 'luxury_gold') {
+                // Use the image
+                if (luxuryGoldImg.complete && luxuryGoldImg.naturalHeight !== 0) {
+                    ctx.drawImage(luxuryGoldImg, 0, 0, w, h);
+                }
+            }
 
             ctx.restore();
         }
@@ -1007,6 +1187,7 @@
                 const weight = field.fontWeight || '400';
                 ctx.font = `${weight} ${field.fontSize}px "${field.fontFamily}"`;
                 
+                // Hit test for multi-line
                 const lines = field.text.toString().split('\n');
                 let maxWidth = 0;
                 lines.forEach(line => {

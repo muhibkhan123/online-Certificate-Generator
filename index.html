@@ -57,8 +57,11 @@
     <!-- Top Header -->
     <header class="bg-white px-4 md:px-6 py-3 flex items-center justify-between shrink-0 z-10 shadow-sm border-b border-gray-200">
         <div class="flex items-center gap-3">
-            <button onclick="toggleMenu()" class="md:hidden p-2 -ml-2 text-gray-600 hover:bg-gray-100 rounded-lg">
+            <button onclick="toggleMenu()" class="p-2 -ml-2 text-gray-600 hover:bg-gray-100 rounded-lg" title="Toggle Menu">
                 <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+            <button onclick="toggleLayer()" class="p-2 -ml-2 text-gray-600 hover:bg-gray-100 rounded-lg" title="Toggle Layer">
+                <i data-lucide="layers" class="w-6 h-6"></i>
             </button>
             <div class="bg-gradient-to-br from-yellow-500 to-yellow-700 text-white p-2 rounded-lg shadow-sm">
                 <i data-lucide="award" class="w-5 h-5 md:w-6 md:h-6"></i>
@@ -75,7 +78,7 @@
     </header>
 
     <!-- Certificate Type Navigation Tabs -->
-    <nav class="bg-gray-50 border-b border-gray-200 px-6 py-3 relative z-50 shadow-inner">
+    <nav id="top-nav-menu" class="hidden bg-gray-50 border-b border-gray-200 px-6 py-3 relative z-50 shadow-inner">
         <div class="flex flex-wrap gap-3 justify-center items-start">
             
             <!-- Quran Dropdown -->
@@ -126,7 +129,7 @@
     <main class="flex-1 flex overflow-hidden">
         
         <!-- Controls Sidebar (Left) -->
-        <aside class="w-96 bg-white border-r border-gray-200 flex flex-col shrink-0 z-20 shadow-xl">
+        <aside id="layer-panel" class="hidden w-96 bg-white border-r border-gray-200 flex flex-col shrink-0 z-20 shadow-xl transition-all duration-300">
             
             <!-- Sidebar Tabs -->
             <div class="flex border-b border-gray-200">
@@ -274,7 +277,7 @@
     <script>
         lucide.createIcons();
 
-        // --- Config & State ---
+                // --- Config & State ---
         const canvas = document.getElementById('certificateCanvas');
         const ctx = canvas.getContext('2d');
         const layersList = document.getElementById('layers-list');
@@ -1438,7 +1441,8 @@
                 layersList.appendChild(div);
             });
             lucide.createIcons();
-        }
+
+                }
 
         function updateField(id, key, val) {
             const f = textFields.find(x => x.id === id);
@@ -1531,6 +1535,18 @@
 
         // Initial Load
         draw(); renderLayers();
+    </script>
+
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('top-nav-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        function toggleLayer() {
+            const layerPanel = document.getElementById('layer-panel');
+            layerPanel.classList.toggle('hidden');
+        }
     </script>
 </body>
 </html>

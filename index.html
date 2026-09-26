@@ -10,7 +10,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Great+Vibes&family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&family=Montserrat:wght@300;400;700&family=Open+Sans:wght@400;600&family=Pinyon+Script&family=Playfair+Display:wght@400;700&family=Roboto:wght@400;700&family=Amiri:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
+        <style>
+        @font-face {
+            font-family: 'Jameel Noori Nastaleeq';
+            src: url('https://cdn.jsdelivr.net/npm/jameel-noori/fonts/jameel-noori-nastaleeq4.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f8fafc;
@@ -1444,9 +1451,22 @@
 
                 }
 
-        function updateField(id, key, val) {
+                        function updateField(id, key, val) {
             const f = textFields.find(x => x.id === id);
-            if (f) { f[key] = val; draw(); }
+            if (f) { 
+                f[key] = val; 
+                if (key === 'fontFamily' && document.fonts) {
+                    document.fonts.load('10px "' + val + '"').then(() => {
+                        draw();
+                    });
+                }
+                draw(); 
+            }
+        });
+                }
+                draw(); 
+            }
+        }
         }
         
         function selectField(id, skipRender = false) {

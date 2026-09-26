@@ -1524,17 +1524,36 @@
             draw();
         }
         function updateLogoConfig(key, value) { logoConfig[key] = parseInt(value); draw(); }
-        function downloadCertificate() {
+                function downloadCertificate() {
             const prev = selectedFieldId; selectedFieldId = null; draw();
-            const link = document.createElement('a');
-            link.download = `Certificate-${currentType}.png`;
-            link.href = canvas.toDataURL('image/png', 1.0);
-            link.click();
-            selectedFieldId = prev; draw();
+            try {
+                canvas.toBlob(function(blob) {
+                    if(!blob) {
+                        alert("Error generating image.");
+                        selectedFieldId = prev; draw();
+                        return;
+                    }
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.download = "Certificate-$currentType.png";
+                    link.href = url;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    setTimeout(() => URL.revokeObjectURL(url), 1000);
+                    selectedFieldId = prev; draw();
+                }, 'image/png');
+            } catch (err) {
+                alert("Download failed: " + err.message);
+                selectedFieldId = prev; draw();
+            }
         }
 
         // Initial Load
         draw(); renderLayers();
+        if(document.fonts) {
+            document.fonts.ready.then(() => { draw(); renderLayers(); });
+        }
     </script>
 
     <script>

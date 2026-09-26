@@ -10,9 +10,56 @@
     <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Great+Vibes&family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&family=Montserrat:wght@300;400;700&family=Open+Sans:wght@400;600&family=Pinyon+Script&family=Playfair+Display:wght@400;700&family=Roboto:wght@400;700&family=Amiri:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-        
+        <style>
+        @font-face {
+            font-family: 'Jameel Noori Nastaleeq';
+            src: url('https://cdn.jsdelivr.net/npm/jameel-noori/fonts/jameel-noori-nastaleeq4.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        #canvas-wrapper {
+            background-image: linear-gradient(45deg, #e5e7eb 25%, transparent 25%), 
+                              linear-gradient(-45deg, #e5e7eb 25%, transparent 25%), 
+                              linear-gradient(45deg, transparent 75%, #e5e7eb 75%), 
+                              linear-gradient(-45deg, transparent 75%, #e5e7eb 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .controls-panel::-webkit-scrollbar {
+            width: 6px;
+        }
+        .controls-panel::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        .controls-panel::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 3px;
+        }
+        /* Tab Active States */
+        .tab-btn.active {
+            background-color: #2563eb;
+            color: white;
+            border-color: #2563eb;
+        }
+        .tab-btn.inactive {
+            background-color: white;
+            color: #4b5563;
+            border-color: #e5e7eb;
+        }
+        .tab-btn.inactive:hover {
+            background-color: #f3f4f6;
+        }
+    </style>
 </head>
-<body class="h-screen flex flex-col overflow-hidden text-gray-800">
+<body class="h-[100dvh] flex flex-col overflow-hidden text-gray-800">
 
     <!-- Top Header -->
     <header class="bg-white px-4 md:px-6 py-3 flex items-center justify-between shrink-0 z-10 shadow-sm border-b border-gray-200">
@@ -89,7 +136,7 @@
     <main class="flex-1 flex overflow-hidden">
         
         <!-- Controls Sidebar (Left) -->
-        <aside id="layer-panel" class="hidden w-96 bg-white border-r border-gray-200 flex flex-col shrink-0 z-20 shadow-xl transition-all duration-300">
+        <aside id="layer-panel" class="hidden w-full md:w-96 bg-white absolute md:relative h-full border-r border-gray-200 flex flex-col shrink-0 z-20 shadow-xl transition-all duration-300">
             
             <!-- Sidebar Tabs -->
             <div class="flex border-b border-gray-200">
@@ -1404,9 +1451,17 @@
 
                 }
 
-                function updateField(id, key, val) {
+        function updateField(id, key, val) {
             const f = textFields.find(x => x.id === id);
-            if (f) { f[key] = val; draw(); }
+            if (f) { 
+                f[key] = val; 
+                if (key === 'fontFamily' && document.fonts) {
+                    document.fonts.load('10px "' + val + '"').then(() => {
+                        draw();
+                    });
+                }
+                draw(); 
+            }
         }
 
         function selectField(id, skipRender = false) {
